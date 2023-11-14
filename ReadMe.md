@@ -15,7 +15,6 @@
 
 - I whode like to some how use my PSP 1000 for this porject, so maybe a imige genoraitor for psp. Some fing like wall paper genoraitr in linux xsceenseiver remade in rust or C++
 
-- 
 <!--     
 ## What new skills will you need to acquire? What topics will you need to research?
 

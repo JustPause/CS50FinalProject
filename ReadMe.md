@@ -15,7 +15,7 @@
 
 - I whode like to some how use my PSP 1000 for this porject, so maybe a imige genoraitor for psp. Some fing like wall paper genoraitr in linux xsceenseiver remade in rust or C++ -->
 
-This project is gona be my firest real viealble destop alicasion in C++. For a long time i wanted to use encprion in my work and this si the place to start doing it
+This project is gona be my firest real viealble destop alicasion in C++. For a long time i wanted to use encprion in my work and this is the place to start doing it.
 
 - PasswordManiger
   - Master Password Protected
@@ -26,6 +26,11 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
 
 ## What new skills will you need to acquire? What topics will you need to research?
 
+I will ne to get understangin of how to encript a messige in a deeper way
+
+Qt graficks
+
+C++ Skils
 
 <!--   
 ## If working with one or two classmates, who will do what?

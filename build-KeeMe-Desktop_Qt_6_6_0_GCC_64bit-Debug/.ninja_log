@@ -1,0 +1,16 @@
+# ninja log v5
+2	5	0	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/cmake.verify_globs	23900c25261227b3
+5	135	1700450970938942747	KeeMe_autogen/timestamp	1760911590faf4a9
+5	135	1700450970938942747	KeeMe_autogen/mocs_compilation.cpp	1760911590faf4a9
+5	135	1700450970938942747	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/KeeMe_autogen/timestamp	1760911590faf4a9
+5	135	1700450970938942747	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/KeeMe_autogen/mocs_compilation.cpp	1760911590faf4a9
+135	1147	1700450971950945644	CMakeFiles/KeeMe.dir/KeeMe_autogen/mocs_compilation.cpp.o	958269a583eacf15
+135	1196	1700450972002945793	CMakeFiles/KeeMe.dir/window.cpp.o	ff796eb96907bc49
+135	1218	1700450972022945850	CMakeFiles/KeeMe.dir/main.cpp.o	3c19828117bfb332
+1218	1398	1700450972202946365	KeeMe	b96f0630c1c2a29c
+2	5	0	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/cmake.verify_globs	23900c25261227b3
+2	5	0	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/cmake.verify_globs	23900c25261227b3
+2	5	0	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/cmake.verify_globs	23900c25261227b3
+1	4	0	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/cmake.verify_globs	23900c25261227b3
+2	5	0	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/cmake.verify_globs	23900c25261227b3
+2	5	0	/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/cmake.verify_globs	23900c25261227b3

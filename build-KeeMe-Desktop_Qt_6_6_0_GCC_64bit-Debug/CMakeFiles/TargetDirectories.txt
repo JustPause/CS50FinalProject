@@ -1,9 +1,0 @@
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/KeeMe.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/edit_cache.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/rebuild_cache.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/list_install_components.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/install.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/install/local.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/install/strip.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/KeeMe_autogen_timestamp_deps.dir
-/home/justinas/Programming/CS50FinalProject/build-KeeMe-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/KeeMe_autogen.dir

@@ -24,6 +24,8 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
   - Save to DB
   - In C++ and Qt
 
+---
+
 ## What new skills will you need to acquire? What topics will you need to research?
 
 I will ne to get understangin of how to encript a messige in a deeper way
@@ -32,7 +34,22 @@ Qt graficks
 
 C++ Skils
 
+---
+
 ## If working with one or two classmates, who will do what?
 
-<!--
-## In the world of software, most everything takes longer to implement than you expect. And so it’s not uncommon to accomplish less in a fixed amount of time than you hope. What might you consider to be a good outcome for your project? A better outcome? The best outcome? -->
+Only my will be working on this project
+
+## In the world of software, most everything takes longer to implement than you expect. And so it’s not uncommon to accomplish less in a fixed amount of time than you hope. What might you consider to be a good outcome for your project? A better outcome? The best outcome? 
+
+till the new yeat to make a cli password genoreitor and saver
+
+---
+
+##ToDo
+
+1. [ ] Passwords genoreitor
+2. [ ] Encripror metod
+3. [ ] DataBase comunicasion syatem
+    - The data shode be a user **username**, **Password**
+4. [ ] Encript under master paswor

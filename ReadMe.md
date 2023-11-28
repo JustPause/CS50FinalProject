@@ -32,7 +32,7 @@ Qt graficks
 
 C++ Skils
 
-<!--   
 ## If working with one or two classmates, who will do what?
 
+<!--
 ## In the world of software, most everything takes longer to implement than you expect. And so it’s not uncommon to accomplish less in a fixed amount of time than you hope. What might you consider to be a good outcome for your project? A better outcome? The best outcome? -->

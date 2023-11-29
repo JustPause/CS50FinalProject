@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Window; }
+namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class Window : public QMainWindow
@@ -16,6 +16,6 @@ public:
     ~Window();
 
 private:
-    Ui::Window *ui;
+    Ui::MainWindow *ui;
 };
 #endif // WINDOW_H

@@ -8,5 +8,15 @@
         <source>CS50 Final Project</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="window.ui" line="32"/>
+        <source>Enter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="window.ui" line="48"/>
+        <source>Password</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

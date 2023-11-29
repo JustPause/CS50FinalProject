@@ -13,3 +13,9 @@ Window::~Window()
     delete ui;
 }
 
+
+void Window::on_lineEdit_textChanged(const QString &arg1)
+{
+    qDebug("%s\n", arg1.toUtf8().data());
+}
+

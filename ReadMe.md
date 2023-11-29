@@ -1,4 +1,4 @@
-#
+# The Finaile project for CS50
 
 ## What will your software do? What features will it have? How will it be executed?
 

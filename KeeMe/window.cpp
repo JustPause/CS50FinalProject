@@ -13,9 +13,16 @@ Window::~Window()
     delete ui;
 }
 
+std::string thePassword;
 
 void Window::on_lineEdit_textChanged(const QString &arg1)
 {
-    qDebug("%s\n", arg1.toUtf8().data());
+    thePassword =  arg1.toUtf8().data();
+
+}
+
+void Window::on_pushButton_clicked()
+{
+    qDebug("%s\n",thePassword.data());
 }
 

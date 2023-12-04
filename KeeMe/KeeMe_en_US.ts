@@ -14,17 +14,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="window.ui" line="57"/>
+        <location filename="window.ui" line="54"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="window.ui" line="70"/>
+        <location filename="window.ui" line="67"/>
         <source>Change Master Pasword</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="window.ui" line="83"/>
+        <location filename="window.ui" line="80"/>
         <source>Select DB</source>
         <translation type="unfinished"></translation>
     </message>

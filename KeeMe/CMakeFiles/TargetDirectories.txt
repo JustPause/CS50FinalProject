@@ -1,8 +1,0 @@
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/KeeMe.dir
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/edit_cache.dir
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/rebuild_cache.dir
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/list_install_components.dir
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/install.dir
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/install/local.dir
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/install/strip.dir
-/home/justinas/Programming/CS50FinalProject/KeeMe/CMakeFiles/KeeMe_autogen.dir

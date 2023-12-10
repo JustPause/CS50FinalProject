@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/KeeMe.dir/KeeMe_autogen/mocs_compilation.cpp.o CMakeFiles/KeeMe.dir/main.cpp.o CMakeFiles/KeeMe.dir/submit.cpp.o -o KeeMe  /usr/lib/x86_64-linux-gnu/libQt5Widgets.so.5.15.10 /usr/lib/x86_64-linux-gnu/libQt5Gui.so.5.15.10 /usr/lib/x86_64-linux-gnu/libQt5Core.so.5.15.10 

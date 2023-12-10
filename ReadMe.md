@@ -22,7 +22,8 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
   - Save Passwords
   - Generaite Passwords
   - Save to DB
-  - In C++ and Qt
+  ~~- In C++ and Qt~~
+  - In Java and Swing
 
 ---
 
@@ -30,9 +31,7 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
 
 I will ne to get understangin of how to encript a messige in a deeper way
 
-Qt graficks
-
-C++ Skils
+Java 
 
 ---
 

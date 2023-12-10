@@ -47,8 +47,7 @@ public:
                   << "Peazz previde a password: " << std::endl;
         std::cin >> password;
 
-        Encripsion.openATheFileWithPassword
-        En
+        Encripsion.openATheFileWithPassword();
     }
 
     FileHandle(string path)

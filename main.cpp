@@ -4,29 +4,54 @@
 
 using std::string;
 
+class Encripsion
+{
+private:
+    /* data */
+public:
+    
+};
+
 class FileHandle
 {
 
 private:
     string pathOfPassFile;
 
+    bool checkIfItsMyFile(string str)
+    {
+        std::cout << str;
+        return true;
+    }
+
     void inputCheck(string file)
     {
-        std::ifstream ifile; 
+        std::ifstream ifile;
         ifile.open(file);
 
+        string s;
+
+        std::getline(ifile, s);
+        checkIfItsMyFile(s);
     }
 
 public:
-    void selectDB()
+    void givePassword()
     {
         string temp;
+        string password;
+
+        inputCheck(pathOfPassFile);
+
         std::cout << "Hello" << std::endl
-                  << "Select your .dbpass file" << std::endl;
-        std::cin >> temp;
+                  << "Peazz previde a password: " << std::endl;
+        std::cin >> password;
+
+        Encripsion.openATheFileWithPassword
+        En
     }
 
-    FileHandle(std::string path)
+    FileHandle(string path)
     {
         pathOfPassFile = path;
     }
@@ -35,10 +60,17 @@ public:
 int main(int argc, char const *argv[])
 {
 
-    FileHandle fileHandle("as");
+    if (argc != 2)
+    {
+        std::cout << "Pleaz give path"
+                  << "\n";
+        return 0;
+    }
 
-    fileHandle.selectDB();
+    FileHandle fileHandle(argv[1]);
 
-    std::cout << "Done\n";
+    fileHandle.printHello();
+
+    std::cout << argc << "\n";
     return 0;
 }

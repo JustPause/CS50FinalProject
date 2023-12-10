@@ -53,3 +53,5 @@ till the new yeat to make a cli password genoreitor and saver
 3. [ ] DataBase comunicasion syatem
     - The data shode be a user **username**, **Password**
 4. [ ] Encript under master paswor
+
+1. - [ ] open file to chek if its wirte file, to that my placing some text in the firest file

@@ -23,7 +23,8 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
   - Generaite Passwords
   - Save to DB
   ~~- In C++ and Qt~~
-  - In Java and Swing
+  ~~- In Java and Swing~~
+  - With C++ in CLI
 
 ---
 

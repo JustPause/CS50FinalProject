@@ -7,9 +7,10 @@ using std::string;
 class Encripsion
 {
 private:
-    /* data */
 public:
-    
+    static void openATheFileWithPassword()
+    {
+    }
 };
 
 class FileHandle
@@ -67,8 +68,6 @@ int main(int argc, char const *argv[])
     }
 
     FileHandle fileHandle(argv[1]);
-
-    fileHandle.printHello();
 
     std::cout << argc << "\n";
     return 0;

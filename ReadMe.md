@@ -22,8 +22,8 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
   - Save Passwords
   - Generaite Passwords
   - Save to DB
-  ~~- In C++ and Qt~~
-  ~~- In Java and Swing~~
+    - ~~In C++ and Qt~~
+    - ~~In Java and Swing~~
   - With C++ in CLI
 
 ---
@@ -32,7 +32,7 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
 
 I will ne to get understangin of how to encript a messige in a deeper way
 
-Java 
+Java
 
 ---
 
@@ -40,18 +40,17 @@ Java
 
 Only my will be working on this project
 
-## In the world of software, most everything takes longer to implement than you expect. And so it’s not uncommon to accomplish less in a fixed amount of time than you hope. What might you consider to be a good outcome for your project? A better outcome? The best outcome? 
+## In the world of software, most everything takes longer to implement than you expect. And so it’s not uncommon to accomplish less in a fixed amount of time than you hope. What might you consider to be a good outcome for your project? A better outcome? The best outcome?
 
 till the new yeat to make a cli password genoreitor and saver
 
 ---
 
-##ToDo
+## ToDo
 
 1. [ ] Passwords genoreitor
 2. [ ] Encripror metod
 3. [ ] DataBase comunicasion syatem
-    - The data shode be a user **username**, **Password**
+    -  [ ] The data shode be a user **username**, **Password**
 4. [ ] Encript under master paswor
-
-1. - [ ] open file to chek if its wirte file, to that my placing some text in the firest file
+1. [ ] open file to chek if its wirte file, to that my placing some text in the firest file

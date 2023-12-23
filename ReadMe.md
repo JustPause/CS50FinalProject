@@ -4,6 +4,10 @@
 
 - libsodium
 
+## To Start aplicasion
+
+make -C build/ && ./build/RunMe Pass.pass
+
 ## What will your software do? What features will it have? How will it be executed?
 
 <!-- 3 idieas
@@ -53,7 +57,7 @@ till the new yeat to make a cli password genoreitor and saver
 1. [ ] Passwords genoreitor
 2. [ ] Encripror metod
 3. [ ] DataBase comunicasion syatem
-     - [ ] The data should be a user **username**, **Password**
+   - [ ] The data should be a user **username**, **Password**
 4. [ ] Encript under master paswor
 5. [ ] open the file to chek if its write file, to that my placing some text in the firest file
 

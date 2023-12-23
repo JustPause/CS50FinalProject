@@ -10,17 +10,10 @@ class Encripsion
 {
 public:
 
-    static void openATheFileWithPassword()
+    static void hash_string(const char* s, char* hashed_password_return)
     {
-        std::cout << "Opens a file serech" << std::endl;
-    }
-
-    static void hash_string(const char* s)
-    {
-
-        // https://doc.libsodium.org/hashing/generic_hashing
-
         char hashed_password[crypto_pwhash_STRBYTES];
+        // https://doc.libsodium.org/hashing/generic_hashing
 
         if (crypto_pwhash_str
         (hashed_password, s, strlen(s),
@@ -37,8 +30,7 @@ public:
             exit(4);
         }
 
-        std::clog << "Hash In Hash: " << hashed_password << std::endl;
-
+        hashed_password_return = hashed_password;
     }
 };
 
@@ -48,12 +40,21 @@ class FileHandle
 private:
     string pathOfPassFile;
 
+    static void open_password_file()
+    {
+        std::cout << "Opens a file serech" << std::endl;
+    }
+
     void checkIfItsMyFile(string str)
     {
-        if (strcmp(str.c_str(), "CSFinalProject") != 0) {
-            std::cout << "You have selecter wrong file" << std::endl;
-            exit(1);
-        }
+        // std::ifstream ifile;
+        // ifile.open(pathOfPassFile);
+
+        // string s;
+
+        // std::getline(ifile, s);
+
+        // std::cout << s << std::endl;
     }
 
     void inputCheck(string file)
@@ -71,22 +72,19 @@ public:
     void givePassword()
     {
 
-        string temp;
         string password;
+        char* hashPassword;
 
         inputCheck(pathOfPassFile);
 
         std::cout << "Hello" << std::endl
             << "Please previde a password: " << std::endl;
+
         std::cin >> password;
 
-        std::clog << "UnHash: " << password << std::endl;
+        Encripsion::hash_string(password.c_str(), hashPassword);
 
-        Encripsion::hash_string(password.c_str());
-
-        std::clog << "Hash: " << password << std::endl;
-
-        Encripsion::openATheFileWithPassword();
+        FileHandle::open_password_file();
 
         // TODO The hash password can be used as a seed for the oder passwords. With out main passwords oder passwords won't be understandibals
 

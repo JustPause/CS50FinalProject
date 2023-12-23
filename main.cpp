@@ -5,13 +5,14 @@
 #include <stdint.h>
 
 using std::string;
-
+static string hashed_password_global;
 class Encripsion
 {
 public:
 
-    static void hash_string(const char* s, char* hashed_password_return)
+    static void hash_string(const char* s)
     {
+
         char hashed_password[crypto_pwhash_STRBYTES];
         // https://doc.libsodium.org/hashing/generic_hashing
 
@@ -23,14 +24,42 @@ public:
             exit(3);
         }
 
+        if (password_verify(hashed_password, s)) {
+            exit(4);
+        }
+
+
+        string str(hashed_password);
+        hashed_password_global = hashed_password;
+
+        if (password_verify((char*)hashed_password_global.c_str(), s)) {
+            exit(4);
+        }
+
+        std::clog << hashed_password << " - " << hashed_password_global << std::endl;
+    }
+
+    static bool password_verify(char hashed_password[128], const char* s)
+    {
         if (crypto_pwhash_str_verify
         (hashed_password, s, strlen(s)) != 0) {
             /* wrong password */
             std::clog << "wrong password:" << std::endl;
-            exit(4);
+            return true;
         }
+        return false;
 
-        hashed_password_return = hashed_password;
+    }
+    static bool password_verify(const char* s)
+    {
+        if (crypto_pwhash_str_verify
+        (hashed_password_global.c_str(), s, strlen(s)) != 0) {
+            /* wrong password */
+            std::clog << "wrong password:" << std::endl;
+            return true;
+        }
+        return false;
+
     }
 };
 
@@ -40,21 +69,23 @@ class FileHandle
 private:
     string pathOfPassFile;
 
-    static void open_password_file()
+    void open_password_file()
     {
-        std::cout << "Opens a file serech" << std::endl;
+        std::cout << "Opens a file serech " << std::endl;
+        checkIfItsMyFile(pathOfPassFile);
     }
 
-    void checkIfItsMyFile(string str)
+    static void checkIfItsMyFile(string str)
     {
-        // std::ifstream ifile;
-        // ifile.open(pathOfPassFile);
+        std::ifstream ifile;
+        ifile.open(str);
 
-        // string s;
+        string s;
 
-        // std::getline(ifile, s);
+        std::getline(ifile, s);
+        std::cout << hashed_password_global << std::endl;
+        // std::cout << s << " " << Encripsion::password_verify(s.c_str()) << std::endl;
 
-        // std::cout << s << std::endl;
     }
 
     void inputCheck(string file)
@@ -65,7 +96,6 @@ private:
         string s;
 
         std::getline(ifile, s);
-        checkIfItsMyFile(s);
     }
 
 public:
@@ -73,7 +103,6 @@ public:
     {
 
         string password;
-        char* hashPassword;
 
         inputCheck(pathOfPassFile);
 
@@ -82,7 +111,7 @@ public:
 
         std::cin >> password;
 
-        Encripsion::hash_string(password.c_str(), hashPassword);
+        Encripsion::hash_string(password.c_str());
 
         FileHandle::open_password_file();
 

@@ -1,5 +1,9 @@
 # The Finaile project for CS50
 
+## Dependences
+
+- libsodium
+
 ## What will your software do? What features will it have? How will it be executed?
 
 <!-- 3 idieas
@@ -32,8 +36,6 @@ This project is gona be my firest real viealble destop alicasion in C++. For a l
 
 I will ne to get understangin of how to encript a messige in a deeper way
 
-Java
-
 ---
 
 ## If working with one or two classmates, who will do what?
@@ -51,6 +53,11 @@ till the new yeat to make a cli password genoreitor and saver
 1. [ ] Passwords genoreitor
 2. [ ] Encripror metod
 3. [ ] DataBase comunicasion syatem
-    -  [ ] The data shode be a user **username**, **Password**
+     - [ ] The data should be a user **username**, **Password**
 4. [ ] Encript under master paswor
-1. [ ] open file to chek if its wirte file, to that my placing some text in the firest file
+5. [ ] open the file to chek if its write file, to that my placing some text in the firest file
+
+## Retrun numbers
+
+- **1** wrong file
+- **2** sodium is not initialized

@@ -15,16 +15,30 @@ public:
         std::cout << "Opens a file serech" << std::endl;
     }
 
-    static char hash_string(const char* s)
+    static void hash_string(const char* s)
     {
-        unsigned char hash[crypto_generichash_BYTES];
 
         // https://doc.libsodium.org/hashing/generic_hashing
 
-        crypto_generichash(hash, sizeof hash, (const unsigned char*)s, strlen(s), NULL, 0);
-        return *hash;
+        char hashed_password[crypto_pwhash_STRBYTES];
 
-        // TODO UnHash The Password
+        if (crypto_pwhash_str
+        (hashed_password, s, strlen(s),
+            crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE) != 0) {
+            /* out of memory */
+            std::clog << "out of memory:" << std::endl;
+            exit(3);
+        }
+
+        if (crypto_pwhash_str_verify
+        (hashed_password, s, strlen(s)) != 0) {
+            /* wrong password */
+            std::clog << "wrong password:" << std::endl;
+            exit(4);
+        }
+
+        std::clog << "Hash In Hash: " << hashed_password << std::endl;
+
     }
 };
 
@@ -68,11 +82,13 @@ public:
 
         std::clog << "UnHash: " << password << std::endl;
 
-        password = Encripsion::hash_string(password.c_str());
+        Encripsion::hash_string(password.c_str());
 
         std::clog << "Hash: " << password << std::endl;
 
         Encripsion::openATheFileWithPassword();
+
+        // TODO The hash password can be used as a seed for the oder passwords. With out main passwords oder passwords won't be understandibals
 
     }
 
@@ -86,14 +102,14 @@ int main(int argc, char const* argv[])
 {
 
     if (sodium_init() < 0) {
-        std::cout << "sodium is not initialized" << "\n";
+        std::cerr << "sodium is not initialized" << "\n";
         return 2;
     }
 
 
     if (argc != 2)
     {
-        std::cout << "Please give path" << "\n";
+        std::cerr << "Please give path" << "\n";
         return 0;
     }
 

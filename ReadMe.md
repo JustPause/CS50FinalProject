@@ -61,3 +61,9 @@ till the new yeat to make a cli password genoreitor and saver
 
 - **1** wrong file
 - **2** sodium is not initialized
+- **3** libsodium out of memory
+- **4** libsodium wrong password
+
+## Links
+
+- <https://doc.libsodium.org/hashing/generic_hashing>

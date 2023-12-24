@@ -12,31 +12,29 @@ public:
 
     static void hash_string(const char* s)
     {
+        // https://doc.libsodium.org/password_hashing/default_phf
 
-        char hashed_password[crypto_pwhash_STRBYTES];
-        // https://doc.libsodium.org/hashing/generic_hashing
+#define KEY_LEN crypto_box_SEEDBYTES
 
-        if (crypto_pwhash_str
-        (hashed_password, s, strlen(s),
-            crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE) != 0) {
+        unsigned char salt[crypto_pwhash_SALTBYTES];
+        unsigned char key[KEY_LEN];
+
+        randombytes_buf(salt, sizeof salt);
+
+        if (crypto_pwhash
+        (key, sizeof key, s, strlen(s), salt,
+            crypto_pwhash_OPSLIMIT_INTERACTIVE, crypto_pwhash_MEMLIMIT_INTERACTIVE,
+            crypto_pwhash_ALG_DEFAULT) != 0) {
+
             /* out of memory */
             std::clog << "out of memory:" << std::endl;
             exit(3);
         }
 
-        if (password_verify(hashed_password, s)) {
+        if (password_verify("password", s)) {
             exit(4);
         }
 
-
-        string str(hashed_password);
-        hashed_password_global = hashed_password;
-
-        if (password_verify((char*)hashed_password_global.c_str(), s)) {
-            exit(4);
-        }
-
-        std::clog << hashed_password << " - " << hashed_password_global << std::endl;
     }
 
     static bool password_verify(char hashed_password[128], const char* s)

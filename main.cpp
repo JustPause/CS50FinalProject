@@ -10,7 +10,7 @@ class Encripsion
 {
 public:
 
-    static void hash_string(const char* s)
+    void hash_string(const char* s)
     {
         // https://doc.libsodium.org/password_hashing/default_phf
 
@@ -34,10 +34,9 @@ public:
         if (password_verify("password", s)) {
             exit(4);
         }
-
     }
 
-    static bool password_verify(char hashed_password[128], const char* s)
+    bool password_verify(char hashed_password[128], const char* s)
     {
         if (crypto_pwhash_str_verify
         (hashed_password, s, strlen(s)) != 0) {
@@ -48,7 +47,8 @@ public:
         return false;
 
     }
-    static bool password_verify(const char* s)
+
+    bool password_verify(const char* s)
     {
         if (crypto_pwhash_str_verify
         (hashed_password_global.c_str(), s, strlen(s)) != 0) {
@@ -66,12 +66,6 @@ class FileHandle
 
 private:
     string pathOfPassFile;
-
-    void open_password_file()
-    {
-        std::cout << "Opens a file serech " << std::endl;
-        checkIfItsMyFile(pathOfPassFile);
-    }
 
     static void checkIfItsMyFile(string str)
     {
@@ -97,10 +91,17 @@ private:
     }
 
 public:
+
+    void open_password_file()
+    {
+        std::cout << "Opens a file serech " << std::endl;
+        checkIfItsMyFile(pathOfPassFile);
+    }
+
+    string password;
+
     void givePassword()
     {
-
-        string password;
 
         inputCheck(pathOfPassFile);
 
@@ -108,12 +109,6 @@ public:
             << "Please previde a password: " << std::endl;
 
         std::cin >> password;
-
-        Encripsion::hash_string(password.c_str());
-
-        FileHandle::open_password_file();
-
-        // TODO The hash password can be used as a seed for the oder passwords. With out main passwords oder passwords won't be understandibals
 
     }
 
@@ -135,14 +130,21 @@ int main(int argc, char const* argv[])
     if (argc != 2)
     {
         std::cerr << "Please give path" << "\n";
-        return 0;
+        return 1;
     }
 
     FileHandle fileHandle(argv[1]);
 
     fileHandle.givePassword();
 
-    // std::cout << argc << "\n";
+    fileHandle.hash_string(fileHandle.password.c_str());
+    fileHandle.
+
+    fileHandle.open_password_file();
+
+    // TODO The hash password can be used as a seed for the oder passwords. With out main passwords oder passwords won't be understandibals
+
+// std::cout << argc << "\n";
     return 0;
 
 }

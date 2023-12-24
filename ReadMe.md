@@ -6,7 +6,7 @@
 
 ## To Start aplicasion
 
-make -C build/ && ./build/RunMe Pass.pass
+make -C build/ && clear && ./build/RunMe Pass.pass
 
 ## What will your software do? What features will it have? How will it be executed?
 

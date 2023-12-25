@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 using std::string;
-static string hashed_password_global;
+
 class Encripsion
 {
 public:
@@ -14,29 +14,40 @@ public:
     {
         // https://doc.libsodium.org/password_hashing/default_phf
 
-#define KEY_LEN crypto_box_SEEDBYTES
-
         unsigned char salt[crypto_pwhash_SALTBYTES];
-        unsigned char key[KEY_LEN];
+        unsigned char key[crypto_box_SEEDBYTES];
+        char hashed_password[crypto_pwhash_STRBYTES];
 
         randombytes_buf(salt, sizeof salt);
 
         if (crypto_pwhash
-        (key, sizeof key, s, strlen(s), salt,
-            crypto_pwhash_OPSLIMIT_INTERACTIVE, crypto_pwhash_MEMLIMIT_INTERACTIVE,
-            crypto_pwhash_ALG_DEFAULT) != 0) {
+        (
+            key,
+            sizeof key,
+            s,
+            strlen(s),
+            salt,
+            crypto_pwhash_OPSLIMIT_INTERACTIVE,
+            crypto_pwhash_MEMLIMIT_INTERACTIVE,
+            crypto_pwhash_ALG_DEFAULT
+        ) != 0) {
 
             /* out of memory */
             std::clog << "out of memory:" << std::endl;
             exit(3);
         }
 
-        if (password_verify("password", s)) {
+        if (crypto_pwhash_str
+        (hashed_password, s, strlen(s),
+            crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE) != 0) {
+        }
+
+        if (PasswordCheck(hashed_password, s)) {
             exit(4);
         }
     }
 
-    bool password_verify(char hashed_password[128], const char* s)
+    bool PasswordCheck(char hashed_password[128], const char* s)
     {
         if (crypto_pwhash_str_verify
         (hashed_password, s, strlen(s)) != 0) {
@@ -45,19 +56,6 @@ public:
             return true;
         }
         return false;
-
-    }
-
-    bool password_verify(const char* s)
-    {
-        if (crypto_pwhash_str_verify
-        (hashed_password_global.c_str(), s, strlen(s)) != 0) {
-            /* wrong password */
-            std::clog << "wrong password:" << std::endl;
-            return true;
-        }
-        return false;
-
     }
 };
 
@@ -65,20 +63,54 @@ class FileHandle
 {
 
 private:
+
+    string hashed_password_from_file;
+
     string pathOfPassFile;
 
-    static void checkIfItsMyFile(string str)
+    void checkIfItsMyFile(string str)
     {
         std::ifstream ifile;
         ifile.open(str);
 
+        if (!ifile.is_open()) {
+
+            std::cout << "File not found" << std::endl;
+
+            char ats;
+
+            std::cout << "Do you want to craite a new password DataBase? Y/N" << std::endl;
+
+            std::cin >> ats;
+
+            if (tolower(ats) == 'n') {
+                exit(0);
+            }
+
+            std::ofstream ofile(str);
+
+            string password;
+            std::cout << "new Password for file" << std::endl;
+            std::cin >> password;
+
+            Encripsion encripsion;
+            char* passwordChar = password.data();
+
+            encripsion.hash_string(passwordChar);
+
+            std::cout << passwordChar;
+
+            ofile << passwordChar << std::endl;
+            ofile.close();
+//TODO Save the password to the file;
+
+        }
+
         string s;
 
         std::getline(ifile, s);
-        std::cout << hashed_password_global << std::endl;
-        // std::cout << s << " " << Encripsion::password_verify(s.c_str()) << std::endl;
-
     }
+
 
     void inputCheck(string file)
     {
@@ -91,25 +123,22 @@ private:
     }
 
 public:
+    string password;
 
     void open_password_file()
     {
-        std::cout << "Opens a file serech " << std::endl;
+        std::cout << "Opening a file" << std::endl;
         checkIfItsMyFile(pathOfPassFile);
     }
 
-    string password;
-
-    void givePassword()
+    void take_password_from_user()
     {
-
         inputCheck(pathOfPassFile);
 
         std::cout << "Hello" << std::endl
             << "Please previde a password: " << std::endl;
 
         std::cin >> password;
-
     }
 
     FileHandle(string path)
@@ -120,27 +149,24 @@ public:
 
 int main(int argc, char const* argv[])
 {
+    FileHandle fileHandle(argv[1]);
+    Encripsion encripsion;
 
     if (sodium_init() < 0) {
         std::cerr << "sodium is not initialized" << "\n";
         return 2;
     }
 
-
     if (argc != 2)
     {
         std::cerr << "Please give path" << "\n";
         return 1;
     }
-
-    FileHandle fileHandle(argv[1]);
-
-    fileHandle.givePassword();
-
-    fileHandle.hash_string(fileHandle.password.c_str());
-    fileHandle.
-
     fileHandle.open_password_file();
+
+    fileHandle.take_password_from_user();
+
+    encripsion.hash_string(fileHandle.password.c_str());
 
     // TODO The hash password can be used as a seed for the oder passwords. With out main passwords oder passwords won't be understandibals
 

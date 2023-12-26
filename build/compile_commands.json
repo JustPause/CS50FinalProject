@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/justinas/Programming/CS50FinalProject/build",
-  "command": "/usr/bin/g++ -g -std=gnu++17 -o CMakeFiles/RunMe.dir/main.cpp.o -c /home/justinas/Programming/CS50FinalProject/main.cpp",
-  "file": "/home/justinas/Programming/CS50FinalProject/main.cpp",
-  "output": "CMakeFiles/RunMe.dir/main.cpp.o"
-}
-]

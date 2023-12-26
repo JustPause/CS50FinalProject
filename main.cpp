@@ -6,26 +6,35 @@
 
 using std::string;
 
+class error {
+public:
+    static void BigExit(int i)
+    {
+        std::cout << "Error " << i << std::endl;
+        exit(i);
+    }
+};
+
 class Encripsion
 {
 public:
 
-    void hash_string(const char* s)
+    void hash_string(string& s)
     {
         // https://doc.libsodium.org/password_hashing/default_phf
 
         unsigned char salt[crypto_pwhash_SALTBYTES];
         unsigned char key[crypto_box_SEEDBYTES];
         char hashed_password[crypto_pwhash_STRBYTES];
+        const char* inputPassword = s.c_str();
 
         randombytes_buf(salt, sizeof salt);
 
-        if (crypto_pwhash
-        (
+        if (crypto_pwhash(
             key,
             sizeof key,
-            s,
-            strlen(s),
+            inputPassword,
+            strlen(inputPassword),
             salt,
             crypto_pwhash_OPSLIMIT_INTERACTIVE,
             crypto_pwhash_MEMLIMIT_INTERACTIVE,
@@ -33,18 +42,20 @@ public:
         ) != 0) {
 
             /* out of memory */
-            std::clog << "out of memory:" << std::endl;
-            exit(3);
+            error::BigExit(3);
         }
 
         if (crypto_pwhash_str
-        (hashed_password, s, strlen(s),
+        (hashed_password, inputPassword, strlen(inputPassword),
             crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE) != 0) {
         }
 
-        if (PasswordCheck(hashed_password, s)) {
-            exit(4);
+        if (PasswordCheck(hashed_password, inputPassword)) {
+            error::BigExit(4);
         }
+
+        s = hashed_password;
+
     }
 
     bool PasswordCheck(char hashed_password[128], const char* s)
@@ -94,15 +105,14 @@ private:
             std::cin >> password;
 
             Encripsion encripsion;
-            char* passwordChar = password.data();
+            string passwordString = password.data();
 
-            encripsion.hash_string(passwordChar);
+            encripsion.hash_string(passwordString);
 
-            std::cout << passwordChar;
+            ofile << passwordString << std::endl;
 
-            ofile << passwordChar << std::endl;
             ofile.close();
-//TODO Save the password to the file;
+            //TODO Save the password to the file;
 
         }
 
@@ -153,20 +163,18 @@ int main(int argc, char const* argv[])
     Encripsion encripsion;
 
     if (sodium_init() < 0) {
-        std::cerr << "sodium is not initialized" << "\n";
-        return 2;
+        error::BigExit(2);
     }
 
     if (argc != 2)
     {
-        std::cerr << "Please give path" << "\n";
-        return 1;
+        error::BigExit(1);
     }
     fileHandle.open_password_file();
 
     fileHandle.take_password_from_user();
 
-    encripsion.hash_string(fileHandle.password.c_str());
+    encripsion.hash_string(fileHandle.password);
 
     // TODO The hash password can be used as a seed for the oder passwords. With out main passwords oder passwords won't be understandibals
 

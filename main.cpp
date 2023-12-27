@@ -164,24 +164,24 @@ public:
         return ret;
     }
 
-    static void hash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    static void hash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string path)
     {
 
-        string original = "/tmp/original";
-        string encrypted = "/tmp/encrypted";
+        string decrypted = "/tmp/decrypted";
+        string encrypted = path;
 
-        if (hash_file_metod("/tmp/encrypted", "/tmp/original", key) != 0)
+        if (hash_file_metod(encrypted.c_str(), decrypted.c_str(), key) != 0)
         {
             std::clog << "Error hash_file_metod" << std::endl;
         }
     }
 
-    static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string path)
     {
         string decrypted = "/tmp/decrypted";
-        string encrypted = "/tmp/encrypted";
+        string encrypted = path;
 
-        if (unhash_file_metod("/tmp/decrypted", "/tmp/encrypted", key) != 0)
+        if (unhash_file_metod(decrypted.c_str(), encrypted.c_str(), key) != 0)
         {
             std::clog << "Error unhash_file_metod" << std::endl;
         }
@@ -328,6 +328,7 @@ int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
+    unsigned char key[crypto_box_SEEDBYTES] = "pass";
 
     if (sodium_init() < 0)
     {
@@ -338,6 +339,8 @@ int main(int argc, char const *argv[])
     {
         Error::BigExit(1);
     }
+    encripsion.hash_file(key, fileHandle.pathOfPassFile);
+    encripsion.unhash_file(key, fileHandle.pathOfPassFile);
 
     fileHandle.open_password_file();
 
@@ -349,13 +352,9 @@ int main(int argc, char const *argv[])
 
     inDataBase.print_all_words();
 
-    unsigned char key[crypto_box_SEEDBYTES];
-
     // ToDo Some how get a key form the password
 
-    encripsion.hash_file(key);
-
-    encripsion.unhash_file(key);
+    encripsion.hash_file(key, fileHandle.pathOfPassFile);
 
     // TODO The hash password can be used as a seed for the oder passwords. The last n digets are the seed for the incripsion. Anyone can't read the password widaut the main password hash
 

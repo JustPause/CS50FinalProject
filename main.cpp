@@ -259,6 +259,8 @@ private:
             ofile.close();
             // TODO Save the password to the file;
         }
+
+        ifile.close();
     }
 
     void inputCheck(string file)
@@ -319,6 +321,8 @@ private:
         string password;
     };
 
+    string decrypted = "/tmp/decrypted.md";
+
 public:
     void print_all_words()
     {
@@ -343,6 +347,60 @@ public:
             std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
         }
     }
+
+    char get_user_disision()
+    {
+        char return_string;
+        std::cout << "Select one profile: S, "
+                  << "Edit one profile: E, "
+                  << "Delete one profile: D, "
+                  << "Add new profiofile: A, "
+                  << "Qwite aplicasion: Q "
+                  << std::endl;
+        std::cin >> return_string;
+
+        tolower(return_string);
+        return return_string;
+    }
+
+    void Select()
+    {
+    }
+    void Edit()
+    {
+    }
+    void Delete()
+    {
+    }
+    void Add()
+    {
+
+        std::ofstream outfile(decrypted, std::ios::app);
+        int id;
+        string name,
+            username,
+            password;
+
+        std::cout << "give id: ";
+        std::cin >> id;
+
+        std::cout << "give name: ";
+        std::cin >> name;
+
+        std::cout << "give username: ";
+        std::cin >> username;
+
+        std::cout << "give password: ";
+        std::cin >> password;
+
+        outfile << id << "\t" << name << "\t" << username << "\t" << password << "\t" << std::endl;
+        std::cin >> password;
+        outfile.close();
+    }
+    void Qwite()
+    {
+        Error::BigExit(0);
+    }
 };
 
 string FileHandle::password;
@@ -356,7 +414,7 @@ int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
-    unsigned char key[crypto_box_SEEDBYTES] = "Pass";
+    unsigned char key[crypto_box_SEEDBYTES] = "";
 
     if (sodium_init() < 0)
     {
@@ -372,14 +430,25 @@ int main(int argc, char const *argv[])
 
     fileHandle.take_password_from_user(key);
 
-    std::clog << "key - " << key << std::endl;
-
     encripsion.unhash_file(key, fileHandle.pathOfPassFile);
 
     InDataBase inDataBase;
     inDataBase.print_all_words();
 
-// inDataBase.get_user_disision();
+    char user_disision = inDataBase.get_user_disision();
+    if (user_disision == 's')
+    {
+    }
+    else if (user_disision == 'e')
+    {
+    }
+    else if (user_disision == 'd')
+    {
+    }
+    else if (user_disision == 'a')
+    {
+        inDataBase.Add();
+    }
 
     encripsion.hash_file(key);
 

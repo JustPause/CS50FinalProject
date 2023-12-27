@@ -10,7 +10,8 @@
 using std::string;
 #define CHUNK_SIZE 4096
 
-class error {
+class Error
+{
 public:
     static void BigExit(int i)
     {
@@ -18,7 +19,7 @@ public:
         exit(i);
     }
 
-    static void print(auto s)
+    static void print(string s)
     {
         std::cout << "print : " << s << std::endl;
     }
@@ -27,55 +28,51 @@ public:
 class Encripsion
 {
 private:
-
-
 public:
-    static unsigned char* p_key;
-    void hash_string(string& s)
+    static unsigned char *p_key;
+    void hash_string(string &s)
     {
         // https://doc.libsodium.org/password_hashing/default_phf
 
         unsigned char salt[crypto_pwhash_SALTBYTES];
         unsigned char key[crypto_box_SEEDBYTES];
         char hashed_password[crypto_pwhash_STRBYTES];
-        const char* inputPassword = s.c_str();
+        const char *inputPassword = s.c_str();
 
         randombytes_buf(salt, sizeof salt);
 
         if (crypto_pwhash(
-            key,
-            sizeof key,
-            inputPassword,
-            strlen(inputPassword),
-            salt,
-            crypto_pwhash_OPSLIMIT_INTERACTIVE,
-            crypto_pwhash_MEMLIMIT_INTERACTIVE,
-            crypto_pwhash_ALG_DEFAULT
-        ) != 0) {
+                key,
+                sizeof key,
+                inputPassword,
+                strlen(inputPassword),
+                salt,
+                crypto_pwhash_OPSLIMIT_INTERACTIVE,
+                crypto_pwhash_MEMLIMIT_INTERACTIVE,
+                crypto_pwhash_ALG_DEFAULT) != 0)
+        {
 
             /* out of memory */
-            error::BigExit(3);
+            Error::BigExit(3);
         }
 
         p_key = key;
 
-        if (crypto_pwhash_str
-        (hashed_password, inputPassword, strlen(inputPassword),
-            crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE) != 0) {
+        if (crypto_pwhash_str(hashed_password, inputPassword, strlen(inputPassword),
+                              crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE) != 0)
+        {
         }
 
-        if (PasswordCheck(hashed_password, inputPassword)) {
-            error::BigExit(4);
+        if (PasswordCheck(hashed_password, inputPassword))
+        {
+            Error::BigExit(4);
         }
-
-        s = hashed_password;
-
     }
 
-    bool PasswordCheck(char hashed_password[128], const char* s)
+    bool PasswordCheck(char hashed_password[128], const char *s)
     {
-        if (crypto_pwhash_str_verify
-        (hashed_password, s, strlen(s)) != 0) {
+        if (crypto_pwhash_str_verify(hashed_password, s, strlen(s)) != 0)
+        {
             /* wrong password */
             std::clog << "wrong password or wrong file:" << std::endl;
             return true;
@@ -84,69 +81,76 @@ public:
         return false;
     }
 
-    static int hash_file_metod(const char* target_file, const char* source_file, const unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    static int hash_file_metod(const char *target_file, const char *source_file, const unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
     {
-        unsigned char  buf_in[CHUNK_SIZE];
-        unsigned char  buf_out[CHUNK_SIZE + crypto_secretstream_xchacha20poly1305_ABYTES];
-        unsigned char  header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
+        unsigned char buf_in[CHUNK_SIZE];
+        unsigned char buf_out[CHUNK_SIZE + crypto_secretstream_xchacha20poly1305_ABYTES];
+        unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
         crypto_secretstream_xchacha20poly1305_state st;
-        FILE* fp_t, * fp_s;
+        FILE *fp_t, *fp_s;
         unsigned long long out_len;
-        size_t         rlen;
-        int            eof;
-        unsigned char  tag;
+        size_t rlen;
+        int eof;
+        unsigned char tag;
 
         fp_s = fopen(source_file, "rb");
         fp_t = fopen(target_file, "wb");
         crypto_secretstream_xchacha20poly1305_init_push(&st, header, key);
         fwrite(header, 1, sizeof header, fp_t);
-        do {
+        do
+        {
             rlen = fread(buf_in, 1, sizeof buf_in, fp_s);
             eof = feof(fp_s);
             tag = eof ? crypto_secretstream_xchacha20poly1305_TAG_FINAL : 0;
             crypto_secretstream_xchacha20poly1305_push(&st, buf_out, &out_len, buf_in, rlen,
-                NULL, 0, tag);
+                                                       NULL, 0, tag);
             fwrite(buf_out, 1, (size_t)out_len, fp_t);
         } while (!eof);
         fclose(fp_t);
         fclose(fp_s);
         return 0;
-
     };
 
-    static int unhash_file_metod(const char* target_file, const char* source_file, const unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    static int unhash_file_metod(const char *target_file, const char *source_file, const unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
     {
-        unsigned char  buf_in[CHUNK_SIZE + crypto_secretstream_xchacha20poly1305_ABYTES];
-        unsigned char  buf_out[CHUNK_SIZE];
-        unsigned char  header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
+        unsigned char buf_in[CHUNK_SIZE + crypto_secretstream_xchacha20poly1305_ABYTES];
+        unsigned char buf_out[CHUNK_SIZE];
+        unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
         crypto_secretstream_xchacha20poly1305_state st;
-        FILE* fp_t, * fp_s;
+        FILE *fp_t, *fp_s;
         unsigned long long out_len;
-        size_t         rlen;
-        int            eof;
-        int            ret = -1;
-        unsigned char  tag;
+        size_t rlen;
+        int eof;
+        int ret = -1;
+        unsigned char tag;
 
         fp_s = fopen(source_file, "rb");
         fp_t = fopen(target_file, "wb");
         fread(header, 1, sizeof header, fp_s);
-        if (crypto_secretstream_xchacha20poly1305_init_pull(&st, header, key) != 0) {
+        if (crypto_secretstream_xchacha20poly1305_init_pull(&st, header, key) != 0)
+        {
             goto ret; /* incomplete header */
         }
-        do {
+        do
+        {
             rlen = fread(buf_in, 1, sizeof buf_in, fp_s);
             eof = feof(fp_s);
             if (crypto_secretstream_xchacha20poly1305_pull(&st, buf_out, &out_len, &tag,
-                buf_in, rlen, NULL, 0) != 0) {
+                                                           buf_in, rlen, NULL, 0) != 0)
+            {
                 goto ret; /* corrupted chunk */
             }
-            if (tag == crypto_secretstream_xchacha20poly1305_TAG_FINAL) {
-                if (!eof) {
+            if (tag == crypto_secretstream_xchacha20poly1305_TAG_FINAL)
+            {
+                if (!eof)
+                {
                     goto ret; /* end of stream reached before the end of the file */
                 }
             }
-            else { /* not the final chunk yet */
-                if (eof) {
+            else
+            { /* not the final chunk yet */
+                if (eof)
+                {
                     goto ret; /* end of file reached before the end of the stream */
                 }
             }
@@ -166,10 +170,10 @@ public:
         string original = "/tmp/original";
         string encrypted = "/tmp/encrypted";
 
-        if (hash_file_metod("/tmp/encrypted", "/tmp/original", key) != 0) {
-            std::clog << "error hash_file_metod" << std::endl;
+        if (hash_file_metod("/tmp/encrypted", "/tmp/original", key) != 0)
+        {
+            std::clog << "Error hash_file_metod" << std::endl;
         }
-
     }
 
     static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
@@ -177,24 +181,24 @@ public:
         string decrypted = "/tmp/decrypted";
         string encrypted = "/tmp/encrypted";
 
-        if (unhash_file_metod("/tmp/decrypted", "/tmp/encrypted", key) != 0) {
-            std::clog << "error unhash_file_metod" << std::endl;
+        if (unhash_file_metod("/tmp/decrypted", "/tmp/encrypted", key) != 0)
+        {
+            std::clog << "Error unhash_file_metod" << std::endl;
         }
     }
 };
-
 
 class FileHandle
 {
 
 private:
-
     void checkIfItsMyFile(string str)
     {
         std::ifstream ifile;
         ifile.open(str);
 
-        if (!ifile.is_open()) {
+        if (!ifile.is_open())
+        {
 
             std::cout << "File not found" << std::endl;
 
@@ -204,7 +208,8 @@ private:
 
             std::cin >> ats;
 
-            if (tolower(ats) == 'n') {
+            if (tolower(ats) == 'n')
+            {
                 exit(0);
             }
 
@@ -226,13 +231,11 @@ private:
             std::cout << std::endl;
 
             ofile.close();
-            //TODO Save the password to the file;
-
+            // TODO Save the password to the file;
         }
 
         std::getline(ifile, hashed_password_from_file);
     }
-
 
     void inputCheck(string file)
     {
@@ -267,7 +270,7 @@ public:
         inputCheck(pathOfPassFile);
 
         std::cout << "Hello" << std::endl
-            << "Please previde a password for the file: " << std::endl;
+                  << "Please previde a password for the file: " << std::endl;
 
         std::cin >> password;
     }
@@ -278,9 +281,9 @@ public:
     }
 };
 
-class InDataBase {
+class InDataBase
+{
 private:
-
     struct Passwords
     {
         int id;
@@ -303,7 +306,8 @@ public:
 
         int size = 0;
 
-        while (ifile >> id >> username >> name >> password) {
+        while (ifile >> id >> username >> name >> password)
+        {
             size++;
 
             password_vector.resize(size);
@@ -318,20 +322,21 @@ string FileHandle::password;
 string FileHandle::pathOfPassFile;
 string FileHandle::hashed_password_from_file;
 string FileHandle::hashed_password_from_user;
-unsigned char* Encripsion::p_key;
+unsigned char *Encripsion::p_key;
 
-int main(int argc, char const* argv[])
+int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
 
-    if (sodium_init() < 0) {
-        error::BigExit(2);
+    if (sodium_init() < 0)
+    {
+        Error::BigExit(2);
     }
 
     if (argc != 2)
     {
-        error::BigExit(1);
+        Error::BigExit(1);
     }
 
     fileHandle.open_password_file();
@@ -354,9 +359,9 @@ int main(int argc, char const* argv[])
 
     // TODO The hash password can be used as a seed for the oder passwords. The last n digets are the seed for the incripsion. Anyone can't read the password widaut the main password hash
 
-    //TODO whate for the user to diside what to do, does he want to get a pasword or does he wnat to add new one, or edit, or removie
+    // TODO whate for the user to diside what to do, does he want to get a pasword or does he wnat to add new one, or edit, or removie
 
-    std::cout << "Done" << "\n";
+    std::cout << "Done"
+              << "\n";
     return 0;
-
 }

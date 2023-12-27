@@ -28,9 +28,11 @@ public:
 class Encripsion
 {
 private:
+    static string old_locasion;
+
 public:
     static unsigned char *p_key;
-    void hash_string(string &s)
+    static void hash_string(string &s)
     {
         // https://doc.libsodium.org/password_hashing/default_phf
 
@@ -67,9 +69,11 @@ public:
         {
             Error::BigExit(4);
         }
+
+        s = hashed_password;
     }
 
-    bool PasswordCheck(char hashed_password[128], const char *s)
+    static bool PasswordCheck(char hashed_password[128], const char *s)
     {
         if (crypto_pwhash_str_verify(hashed_password, s, strlen(s)) != 0)
         {
@@ -77,7 +81,6 @@ public:
             std::clog << "wrong password or wrong file:" << std::endl;
             return true;
         }
-        std::clog << "good password:" << std::endl;
         return false;
     }
 
@@ -164,11 +167,11 @@ public:
         return ret;
     }
 
-    static void hash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string path)
+    static void hash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
     {
 
         string decrypted = "/tmp/decrypted.md";
-        string encrypted = path;
+        string encrypted = old_locasion;
 
         if (hash_file_metod(encrypted.c_str(), decrypted.c_str(), key) != 0)
         {
@@ -176,7 +179,7 @@ public:
         }
     }
 
-    static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string path)
+    static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string &path)
     {
         string decrypted = "/tmp/decrypted.md";
         string encrypted = path;
@@ -185,6 +188,36 @@ public:
         {
             std::clog << "Error unhash_file_metod" << std::endl;
         }
+        old_locasion = path;
+        path = decrypted;
+    }
+
+    static void gen_file(string _key, string &path)
+    {
+        string decrypted = "/tmp/decrypted.md";
+        string encrypted = path;
+
+        std::ofstream outfile(decrypted);
+
+        Encripsion encripsion;
+        string key = _key;
+        encripsion.hash_string(key);
+
+        outfile << key << std::endl;
+
+        outfile.close();
+
+        unsigned char password_char[crypto_box_SEEDBYTES];
+
+        std::copy(_key.begin(), _key.end(), password_char);
+
+        if (hash_file_metod(encrypted.c_str(), decrypted.c_str(), password_char) != 0)
+        {
+            std::clog << "Error hash_file_metod" << std::endl;
+        }
+
+        old_locasion = path;
+        path = decrypted;
     }
 };
 
@@ -192,7 +225,7 @@ class FileHandle
 {
 
 private:
-    void checkIfItsMyFile(string str)
+    void checkIfItsMyFile(string str, string path)
     {
         std::ifstream ifile;
         ifile.open(str);
@@ -219,22 +252,13 @@ private:
             std::cout << "new Password for file" << std::endl;
             std::cin >> password;
 
-            Encripsion encripsion;
-            string passwordString = password.data();
+            // unsigned char *password_char = reinterpret_cast<unsigned char *>(*password.c_str());
 
-            encripsion.hash_string(passwordString);
-
-            ofile << passwordString << std::endl;
-
-            hashed_password_from_user = passwordString;
-
-            std::cout << std::endl;
+            Encripsion::gen_file(password, path);
 
             ofile.close();
             // TODO Save the password to the file;
         }
-
-        std::getline(ifile, hashed_password_from_file);
     }
 
     void inputCheck(string file)
@@ -259,10 +283,10 @@ public:
         encripsion.PasswordCheck(hashed_password_from_file.data(), password.data());
     }
 
-    void open_password_file()
+    void open_password_file(string path)
     {
         std::cout << "Opening a file" << std::endl;
-        checkIfItsMyFile(pathOfPassFile);
+        checkIfItsMyFile(pathOfPassFile, path);
     }
 
     void take_password_from_user()
@@ -322,13 +346,14 @@ string FileHandle::password;
 string FileHandle::pathOfPassFile;
 string FileHandle::hashed_password_from_file;
 string FileHandle::hashed_password_from_user;
+string Encripsion::old_locasion;
 unsigned char *Encripsion::p_key;
 
 int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
-    unsigned char key[crypto_box_SEEDBYTES] = "pass";
+    unsigned char key[crypto_box_SEEDBYTES] = "Pass";
 
     if (sodium_init() < 0)
     {
@@ -339,27 +364,19 @@ int main(int argc, char const *argv[])
     {
         Error::BigExit(1);
     }
+
+    fileHandle.open_password_file(fileHandle.pathOfPassFile);
     encripsion.unhash_file(key, fileHandle.pathOfPassFile);
-
-    int i;
-    std::cin >> i;
-
-    encripsion.hash_file(key, fileHandle.pathOfPassFile);
-    
-    // fileHandle.open_password_file();
 
     // fileHandle.take_password_from_user();
 
     // fileHandle.check_user_file_password();
 
-    // InDataBase inDataBase;
-
-    // inDataBase.print_all_words();
+    InDataBase inDataBase;
+    inDataBase.print_all_words();
+    encripsion.hash_file(key);
 
     // ToDo Some how get a key form the password
-
-    // encripsion.hash_file(key, fileHandle.pathOfPassFile);
-
     // TODO The hash password can be used as a seed for the oder passwords. The last n digets are the seed for the incripsion. Anyone can't read the password widaut the main password hash
 
     // TODO whate for the user to diside what to do, does he want to get a pasword or does he wnat to add new one, or edit, or removie

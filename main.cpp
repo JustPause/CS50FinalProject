@@ -189,8 +189,6 @@ class FileHandle
 
 private:
 
-
-
     void checkIfItsMyFile(string str)
     {
         std::ifstream ifile;
@@ -345,24 +343,14 @@ int main(int argc, char const* argv[])
     InDataBase inDataBase;
 
     inDataBase.print_all_words();
-    // static unsigned char* p_key;
-    unsigned char key[crypto_box_SEEDBYTES] = &Encripsion::p_key;
 
-    error::print(key);
+    unsigned char key[crypto_box_SEEDBYTES];
 
-    // crypto_secretstream_xchacha20poly1305_state state;
-    // unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
-    // const unsigned char k[crypto_secretstream_xchacha20poly1305_KEYBYTES]="";
-    // crypto_secretstream_xchacha20poly1305_init_push
-    // (&state, header, key);
-
-// ToDo Some how get a key form the password
+    // ToDo Some how get a key form the password
 
     encripsion.hash_file(key);
 
     encripsion.unhash_file(key);
-
-    // encripsion.hash_string(fileHandle.password);
 
     // TODO The hash password can be used as a seed for the oder passwords. The last n digets are the seed for the incripsion. Anyone can't read the password widaut the main password hash
 

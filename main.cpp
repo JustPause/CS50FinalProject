@@ -167,7 +167,7 @@ public:
     static void hash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string path)
     {
 
-        string decrypted = "/tmp/decrypted";
+        string decrypted = "/tmp/decrypted.md";
         string encrypted = path;
 
         if (hash_file_metod(encrypted.c_str(), decrypted.c_str(), key) != 0)
@@ -178,7 +178,7 @@ public:
 
     static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string path)
     {
-        string decrypted = "/tmp/decrypted";
+        string decrypted = "/tmp/decrypted.md";
         string encrypted = path;
 
         if (unhash_file_metod(decrypted.c_str(), encrypted.c_str(), key) != 0)
@@ -339,22 +339,26 @@ int main(int argc, char const *argv[])
     {
         Error::BigExit(1);
     }
-    encripsion.hash_file(key, fileHandle.pathOfPassFile);
     encripsion.unhash_file(key, fileHandle.pathOfPassFile);
 
-    fileHandle.open_password_file();
+    int i;
+    std::cin >> i;
 
-    fileHandle.take_password_from_user();
+    encripsion.hash_file(key, fileHandle.pathOfPassFile);
+    
+    // fileHandle.open_password_file();
 
-    fileHandle.check_user_file_password();
+    // fileHandle.take_password_from_user();
 
-    InDataBase inDataBase;
+    // fileHandle.check_user_file_password();
 
-    inDataBase.print_all_words();
+    // InDataBase inDataBase;
+
+    // inDataBase.print_all_words();
 
     // ToDo Some how get a key form the password
 
-    encripsion.hash_file(key, fileHandle.pathOfPassFile);
+    // encripsion.hash_file(key, fileHandle.pathOfPassFile);
 
     // TODO The hash password can be used as a seed for the oder passwords. The last n digets are the seed for the incripsion. Anyone can't read the password widaut the main password hash
 

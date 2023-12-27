@@ -287,16 +287,19 @@ public:
     {
         std::cout << "Opening a file" << std::endl;
         checkIfItsMyFile(pathOfPassFile, path);
+        std::clog << "open_password_file secses" << std::endl;
     }
 
-    void take_password_from_user()
+    void take_password_from_user(unsigned char (&key)[crypto_box_SEEDBYTES])
     {
         inputCheck(pathOfPassFile);
 
         std::cout << "Hello" << std::endl
-                  << "Please previde a password for the file: " << std::endl;
+                  << "Please previde a password for the file: " << key << std::endl;
 
         std::cin >> password;
+
+        std::copy(password.begin(), password.end(), key);
     }
 
     FileHandle(string path)
@@ -366,14 +369,18 @@ int main(int argc, char const *argv[])
     }
 
     fileHandle.open_password_file(fileHandle.pathOfPassFile);
+
+    fileHandle.take_password_from_user(key);
+
+    std::clog << "key - " << key << std::endl;
+
     encripsion.unhash_file(key, fileHandle.pathOfPassFile);
-
-    // fileHandle.take_password_from_user();
-
-    // fileHandle.check_user_file_password();
 
     InDataBase inDataBase;
     inDataBase.print_all_words();
+
+// inDataBase.get_user_disision();
+
     encripsion.hash_file(key);
 
     // ToDo Some how get a key form the password

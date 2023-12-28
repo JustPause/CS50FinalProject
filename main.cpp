@@ -396,6 +396,7 @@ public:
         outfile << id << "\t" << name << "\t" << username << "\t" << password << "\t" << std::endl;
         std::cin >> password;
         outfile.close();
+        
     }
     void Qwite()
     {

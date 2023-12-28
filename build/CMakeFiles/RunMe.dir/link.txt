@@ -1,1 +1,1 @@
-/usr/bin/c++  -std=c++20 -g CMakeFiles/RunMe.dir/main.cpp.o -o RunMe  /usr/lib/x86_64-linux-gnu/libsodium.so 
+/usr/bin/c++  -std=c++20 -g CMakeFiles/RunMe.dir/main.cpp.o -o RunMe  /usr/lib/libsodium.so 

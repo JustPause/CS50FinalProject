@@ -1,7 +1,7 @@
-/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/RunMe.dir
-/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/edit_cache.dir
-/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/rebuild_cache.dir
-/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/list_install_components.dir
-/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/install.dir
-/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/install/local.dir
-/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/install/strip.dir
+/home/justpause/Programming/CS50FinalProject/build/CMakeFiles/RunMe.dir
+/home/justpause/Programming/CS50FinalProject/build/CMakeFiles/edit_cache.dir
+/home/justpause/Programming/CS50FinalProject/build/CMakeFiles/rebuild_cache.dir
+/home/justpause/Programming/CS50FinalProject/build/CMakeFiles/list_install_components.dir
+/home/justpause/Programming/CS50FinalProject/build/CMakeFiles/install.dir
+/home/justpause/Programming/CS50FinalProject/build/CMakeFiles/install/local.dir
+/home/justpause/Programming/CS50FinalProject/build/CMakeFiles/install/strip.dir

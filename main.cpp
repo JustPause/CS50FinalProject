@@ -5,6 +5,7 @@
 #include <fstream>
 #include "main.h"
 #include <vector>
+#include <ctime>
 
 #define CHUNK_SIZE 4096
 
@@ -154,6 +155,8 @@ public:
 class InDataBase
 {
 private:
+    static int last_id;
+
     struct Passwords
     {
         int id;
@@ -177,32 +180,62 @@ public:
         while (ifile >> id >> username >> name >> password)
         {
             size++;
-
-            password_vector.resize(size);
-            password_vector[size - 1].id = id;
-
             std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
         }
-
-        ifile >> id >> username >> name >> password;
-        std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
+        last_id = id;
+        ifile.close();
     }
 
-    static char get_user_disision()
+    static bool get_user_disision()
     {
-        char return_string;
-        std::cout << "Select one profile: S, "
-                  << "Edit one profile: E, "
-                  << "Delete one profile: D, "
-                  << "Add new profiofile: A, "
-                  << "Qwite aplicasion: Q "
-                  << std::endl;
-        std::cin >> return_string;
 
-        tolower(return_string);
-        return return_string;
+        bool if_exit = false;
+        char charer;
+        std::cout
+            << "Add new profiofile: A, "
+            << "Qwite aplicasion: Q "
+            << std::endl;
+        std::cin >> charer;
+
+        charer = tolower(charer);
+
+        // if (charer == 's')
+        // {
+        //     Select();
+        // }
+        // else if (charer == 'e')
+        // {
+        //     Edit();
+        // }
+        // else if (charer == 'd')
+        // {
+        //     Delete();
+        // }
+        if (charer == 'a')
+        {
+            Add();
+        }
+        else if (charer == 'q')
+        {
+            Qwite(if_exit);
+        }
+        else
+        {
+            cout << "you dinint select anifing" << endl;
+        }
+
+        return if_exit;
     }
-
+    static string gen_password(int l)
+    {
+        string a = "";
+        std::srand(std::time(nullptr));
+        for (int i = 0; i < l; i++)
+        {
+            string randomString(1, static_cast<char>(std::rand() % 94 + 33));
+            a.append(randomString);
+        }
+    }
     static void Select()
     {
     }
@@ -216,13 +249,10 @@ public:
     {
 
         std::ofstream outfile(decrypted, std::ios::app);
-        int id;
+        int id = last_id + 1;
         string name,
             username,
             password;
-
-        std::cout << "give id: ";
-        std::cin >> id;
 
         std::cout << "give name: ";
         std::cin >> name;
@@ -233,13 +263,21 @@ public:
         std::cout << "give password: ";
         std::cin >> password;
 
+        if (password == "gen")
+        {
+            cout << "Can you provide the length of the password: ";
+            int num;
+            cin >> num;
+            password = gen_password(num);
+        }
+
         outfile << id << "\t" << name << "\t" << username << "\t" << password << "\t" << std::endl;
-        std::cin >> password;
         outfile.close();
     }
-    static void Qwite()
+
+    static void Qwite(bool &exiting)
     {
-        exit(1);
+        exiting = true;
     }
 };
 
@@ -292,6 +330,8 @@ static void gen_file()
     }
 }
 
+int InDataBase::last_id;
+
 int main(int argc, char const *argv[])
 {
     unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
@@ -325,6 +365,10 @@ int main(int argc, char const *argv[])
     }
 
     InDataBase::print_all_words();
+
+    while (!InDataBase::get_user_disision())
+        InDataBase::print_all_words();
+    ;
 
     Crypt::encrypt_metod(key);
 

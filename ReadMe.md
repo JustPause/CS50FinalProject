@@ -71,3 +71,18 @@ till the new yeat to make a cli password genoreitor and saver
 ## Links
 
 - <https://doc.libsodium.org/hashing/generic_hashing>
+
+---
+
+project’s title - CS50FinalProject,
+ your name - Justinas,
+  your city and country,
+   and any other details that you’d like to convey to viewers - i am a compiurer schenece student
+
+# CS50FinalProject
+
+#### Video Demo:  <[URL HERE](https://youtu.be/MXf89WOTNJ0)>
+
+#### Description
+
+So this is a project of mine that I started making for the final project of CS50. I planned to make a PSP game, but the project was too big, so I decreased the size. When I started learning gui I thought I could make a GUI in Java, but I was wrong it was way too hard, so I started making a password manager in the console, I spent a lot of time making the program I guess for 4 days staite, I will take holidays form programming after finding this project. more mover I home I will not be to late to give my project.

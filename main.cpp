@@ -154,8 +154,6 @@ public:
 class InDataBase
 {
 private:
-    string pathOfPassFile;
-
     struct Passwords
     {
         int id;
@@ -164,17 +162,15 @@ private:
         string password;
     };
 
-    string decrypted = "/tmp/decrypted.md";
-
 public:
-    void print_all_words(string pathOfPassFile)
+    static void print_all_words()
     {
 
         int id;
         string username, name, password;
         std::vector<Passwords> password_vector;
 
-        std::ifstream ifile(pathOfPassFile);
+        std::ifstream ifile(decrypted);
 
         int size = 0;
         std::cout << "print_all_words" << std::endl;
@@ -192,7 +188,7 @@ public:
         std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
     }
 
-    char get_user_disision()
+    static char get_user_disision()
     {
         char return_string;
         std::cout << "Select one profile: S, "
@@ -207,16 +203,16 @@ public:
         return return_string;
     }
 
-    void Select()
+    static void Select()
     {
     }
-    void Edit()
+    static void Edit()
     {
     }
-    void Delete()
+    static void Delete()
     {
     }
-    void Add()
+    static void Add()
     {
 
         std::ofstream outfile(decrypted, std::ios::app);
@@ -241,53 +237,11 @@ public:
         std::cin >> password;
         outfile.close();
     }
-    void Qwite()
+    static void Qwite()
     {
         exit(1);
-    }
-
-    InDataBase(string path)
-    {
-        pathOfPassFile = path;
     }
 };
-
-int main(int argc, char const *argv[])
-{
-    unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
-
-    if (sodium_init() < 0)
-    {
-        exit(1);
-    }
-
-    if (argc != 2)
-    {
-        exit(1);
-    }
-
-    encrypted = argv[1];
-
-    if (file_exits(argv[1]))
-    {
-        string password = password_form_user();
-        string key_string = hash_password(password);
-        to_key(key, key_string);
-        Crypt::decrypt_metod(key);
-    }
-
-    else
-    {
-        gen_file();
-        string password = password_form_user();
-        string key_string = hash_password(password);
-        to_key(key, key_string);
-    }
-
-    Crypt::encrypt_metod(key);
-
-    return 0;
-}
 
 void to_key(unsigned char key[32], std::string &key_string)
 {
@@ -336,4 +290,43 @@ static void gen_file()
     {
         exit(0);
     }
+}
+
+int main(int argc, char const *argv[])
+{
+    unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
+
+    if (sodium_init() < 0)
+    {
+        exit(1);
+    }
+
+    if (argc != 2)
+    {
+        exit(1);
+    }
+
+    encrypted = argv[1];
+
+    if (file_exits(argv[1]))
+    {
+        string password = password_form_user();
+        string key_string = hash_password(password);
+        to_key(key, key_string);
+        Crypt::decrypt_metod(key);
+    }
+
+    else
+    {
+        gen_file();
+        string password = password_form_user();
+        string key_string = hash_password(password);
+        to_key(key, key_string);
+    }
+
+    // InDataBase::print_all_words();
+
+    Crypt::encrypt_metod(key);
+
+    return 0;
 }

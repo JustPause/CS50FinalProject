@@ -432,9 +432,8 @@ int main(int argc, char const *argv[])
     {
         Error::BigExit(1);
     }
-
-    encripsion.hash_file(key);
     encripsion.unhash_file(key);
+    encripsion.hash_file(key);
 
     // fileHandle.open_password_file(fileHandle.pathOfPassFile);
 

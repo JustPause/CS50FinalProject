@@ -103,7 +103,7 @@ string password_form_user()
     return "password";
 }
 
-void hash_password(string &key, string password)
+string hash_password(string password)
 {
     std::string hash(crypto_generichash_BYTES, '\0');
 
@@ -116,13 +116,12 @@ void hash_password(string &key, string password)
         exit(1);
     }
 
-    key = hash;
+    return hash;
 }
 
 int main(void)
 {
     unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
-    string key_string;
 
     if (sodium_init() != 0)
     {
@@ -130,25 +129,25 @@ int main(void)
     }
 
     string password = password_form_user();
-
-    hash_password(key_string, password);
+    string key_string = hash_password(password);
 
     for (int i = 0; i < 32; i++)
     {
         key[i] = static_cast<unsigned char>(key_string[i]);
     }
 
-    // cout << key_string << endl;
-
-    // if (encrypt("./tmp/encrypted", "./tmp/original", key) != 0)
-    // {
-    //     std::cout << "encrypt" << std::endl;
-    //     return 1;
-    // }
-
     if (decrypt("./tmp/decrypted", "./tmp/encrypted", key) != 0)
     {
         std::cout << "decrypt" << std::endl;
+        return 1;
+    }
+
+    // cout << key_string << endl;
+    cin >> key_string;
+
+    if (encrypt("./tmp/encrypted", "./tmp/decrypted", key) != 0)
+    {
+        std::cout << "encrypt" << std::endl;
         return 1;
     }
 

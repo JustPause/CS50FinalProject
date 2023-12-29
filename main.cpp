@@ -324,7 +324,7 @@ int main(int argc, char const *argv[])
         to_key(key, key_string);
     }
 
-    // InDataBase::print_all_words();
+    InDataBase::print_all_words();
 
     Crypt::encrypt_metod(key);
 

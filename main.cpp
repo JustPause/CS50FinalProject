@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include <sodium.h>
 #include <iostream>
+#include <string.h>
+#include <fstream>
 
 #define CHUNK_SIZE 4096
+
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
 
 static int
 encrypt(const char *target_file, const char *source_file,
@@ -91,6 +98,43 @@ ret:
     return ret;
 }
 
+string password_form_user()
+{
+    return "password";
+}
+
+void hash_password(unsigned char (&key)[crypto_secretstream_xchacha20poly1305_KEYBYTES], string password)
+{
+    // Initialize the Sodium library
+    if (sodium_init() < 0)
+    {
+        std::cerr << "Error initializing Sodium library" << std::endl;
+        exit(1);
+    }
+
+    // Generate a random salt
+    std::string salt(crypto_pwhash_SALTBYTES, '\0');
+    randombytes_buf(reinterpret_cast<unsigned char *>(&salt[0]), salt.size());
+
+    // Hash the password using the Argon2id algorithm
+    std::string hash(crypto_pwhash_STRBYTES, '\0');
+    if (crypto_pwhash_str(
+            &hash[0],
+            password.c_str(),
+            password.length(),
+            crypto_pwhash_OPSLIMIT_INTERACTIVE,
+            crypto_pwhash_MEMLIMIT_INTERACTIVE) != 0)
+    {
+        std::cerr << "Error hashing password" << std::endl;
+        exit(1);
+    }
+
+    for (int i = 0; i < 32; i++)
+    {
+        key[i] = static_cast<unsigned char>(hash[i]);
+    }
+}
+
 int main(void)
 {
     unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
@@ -99,17 +143,27 @@ int main(void)
     {
         return 1;
     }
- 
-    if (encrypt("./tmp/encrypted", "./tmp/original", key) != 0)
-    {
-        std::cout << "encrypt" << std::endl;
-        return 1;
-    }
+
+    string password = password_form_user();
+
+    hash_password(key, password);
+
+    std::string password = "mysecretpassword";
+    std::string hashedPassword = key;
+
+    cout << key << endl;
+
+    // if (encrypt("./tmp/encrypted", "./tmp/original", key) != 0)
+    // {
+    //     std::cout << "encrypt" << std::endl;
+    //     return 1;
+    // }
 
     if (decrypt("./tmp/decrypted", "./tmp/encrypted", key) != 0)
     {
         std::cout << "decrypt" << std::endl;
         return 1;
     }
+
     return 0;
 }

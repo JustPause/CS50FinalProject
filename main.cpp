@@ -289,7 +289,6 @@ public:
     {
         std::cout << "Opening a file" << std::endl;
         checkIfItsMyFile(pathOfPassFile, path);
-        std::clog << "open_password_file secses" << std::endl;
     }
 
     void take_password_from_user(unsigned char (&key)[crypto_box_SEEDBYTES])
@@ -396,7 +395,6 @@ public:
         outfile << id << "\t" << name << "\t" << username << "\t" << password << "\t" << std::endl;
         std::cin >> password;
         outfile.close();
-        
     }
     void Qwite()
     {
@@ -430,7 +428,7 @@ int main(int argc, char const *argv[])
     fileHandle.open_password_file(fileHandle.pathOfPassFile);
 
     fileHandle.take_password_from_user(key);
-
+    std::cout << "key " << key << std::endl;
     encripsion.unhash_file(key, fileHandle.pathOfPassFile);
 
     InDataBase inDataBase;

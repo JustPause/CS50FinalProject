@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fstream>
 #include "main.h"
+#include <vector>
 
 #define CHUNK_SIZE 4096
 
@@ -11,6 +12,9 @@ using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
+
+string decrypted = "./tmp/decrypted";
+string encrypted = "./tmp/encrypted";
 
 static int
 encrypt(const char *target_file, const char *source_file,
@@ -101,7 +105,12 @@ ret:
 
 string password_form_user()
 {
-    return "password";
+    string Password;
+    std::cout << "Please provide a password." << std::endl;
+
+    std::cin >> Password;
+
+    return Password;
 }
 
 string hash_password(string password)
@@ -123,9 +132,6 @@ string hash_password(string password)
 class Crypt
 {
 public:
-    static string decrypted;
-    static string encrypted;
-
     static void decrypt_metod(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
     {
         if (decrypt(decrypted.data(), encrypted.data(), key) != 0)
@@ -137,7 +143,7 @@ public:
 
     static void encrypt_metod(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
     {
-        if (encrypt("./tmp/encrypted", "./tmp/decrypted", key) != 0)
+        if (encrypt(encrypted.data(), decrypted.data(), key) != 0)
         {
             std::cout << "encrypt error" << std::endl;
             exit(1);
@@ -145,8 +151,106 @@ public:
     }
 };
 
-string Crypt::decrypted = "./tmp/decrypted";
-string Crypt::encrypted = "./tmp/encrypted";
+class InDataBase
+{
+private:
+    string pathOfPassFile;
+
+    struct Passwords
+    {
+        int id;
+        string name;
+        string userName;
+        string password;
+    };
+
+    string decrypted = "/tmp/decrypted.md";
+
+public:
+    void print_all_words(string pathOfPassFile)
+    {
+
+        int id;
+        string username, name, password;
+        std::vector<Passwords> password_vector;
+
+        std::ifstream ifile(pathOfPassFile);
+
+        int size = 0;
+        std::cout << "print_all_words" << std::endl;
+        while (ifile >> id >> username >> name >> password)
+        {
+            size++;
+
+            password_vector.resize(size);
+            password_vector[size - 1].id = id;
+
+            std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
+        }
+
+        ifile >> id >> username >> name >> password;
+        std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
+    }
+
+    char get_user_disision()
+    {
+        char return_string;
+        std::cout << "Select one profile: S, "
+                  << "Edit one profile: E, "
+                  << "Delete one profile: D, "
+                  << "Add new profiofile: A, "
+                  << "Qwite aplicasion: Q "
+                  << std::endl;
+        std::cin >> return_string;
+
+        tolower(return_string);
+        return return_string;
+    }
+
+    void Select()
+    {
+    }
+    void Edit()
+    {
+    }
+    void Delete()
+    {
+    }
+    void Add()
+    {
+
+        std::ofstream outfile(decrypted, std::ios::app);
+        int id;
+        string name,
+            username,
+            password;
+
+        std::cout << "give id: ";
+        std::cin >> id;
+
+        std::cout << "give name: ";
+        std::cin >> name;
+
+        std::cout << "give username: ";
+        std::cin >> username;
+
+        std::cout << "give password: ";
+        std::cin >> password;
+
+        outfile << id << "\t" << name << "\t" << username << "\t" << password << "\t" << std::endl;
+        std::cin >> password;
+        outfile.close();
+    }
+    void Qwite()
+    {
+        exit(1);
+    }
+
+    InDataBase(string path)
+    {
+        pathOfPassFile = path;
+    }
+};
 
 int main(int argc, char const *argv[])
 {
@@ -162,13 +266,23 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    string password = password_form_user();
-    string key_string = hash_password(password);
+    encrypted = argv[1];
 
-    to_key(key, key_string);
-    Crypt::decrypt_metod(key);
-    // cout << key_string << endl;
-    cin >> key_string;
+    if (file_exits(argv[1]))
+    {
+        string password = password_form_user();
+        string key_string = hash_password(password);
+        to_key(key, key_string);
+        Crypt::decrypt_metod(key);
+    }
+
+    else
+    {
+        gen_file();
+        string password = password_form_user();
+        string key_string = hash_password(password);
+        to_key(key, key_string);
+    }
 
     Crypt::encrypt_metod(key);
 
@@ -180,5 +294,46 @@ void to_key(unsigned char key[32], std::string &key_string)
     for (int i = 0; i < 32; i++)
     {
         key[i] = static_cast<unsigned char>(key_string[i]);
+    }
+}
+
+bool file_exits(string path)
+{
+    std::ifstream ifile;
+    ifile.open(path);
+
+    if (!ifile.is_open())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+static void gen_file()
+{
+    std::cout << "File not found" << std::endl;
+    char ats;
+
+    std::cout << "Do you want to craite a new password DataBase? Y/N" << std::endl;
+
+    std::cin >> ats;
+
+    if (tolower(ats) == 'n')
+    {
+        exit(0);
+    }
+    else if (tolower(ats) == 'y')
+    {
+        std::ofstream decrypt_file(decrypted);
+        decrypt_file << "Hello, World!";
+        decrypt_file.close();
+        std::cout << "File created successfully." << std::endl;
+    }
+    else
+    {
+        exit(0);
     }
 }

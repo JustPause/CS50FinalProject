@@ -572,13 +572,13 @@ int main(int argc, char const *argv[])
         Error::BigExit(1);
     }
 
-    // if (fileHandle.deas_file_exist(argv[1]))
-    // {
+    if (fileHandle.deas_file_exist(argv[1]))
+    {
 
     // opens the file with password
-    // std::cout << "Please provide a password." << std::endl;
+    std::cout << "Please provide a password." << std::endl;
 
-    // std::cin >> Password;
+    std::cin >> Password;
 
     encripsion.key_derivation(Password, key);
     

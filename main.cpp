@@ -171,7 +171,7 @@ public:
     {
 
         string decrypted = "/tmp/decrypted.md";
-        string encrypted = old_locasion;
+        string encrypted = "/tmp/Pass.pass";
 
         unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
 
@@ -183,26 +183,19 @@ public:
         }
     }
 
-    static void unhash_file(string keyString, string &path)
+    static void unhash_file(string keyString)
     {
         string decrypted = "/tmp/decrypted.md";
-        string encrypted = path;
+        string encrypted = "/tmp/Pass.pass";
 
         unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
 
         std::copy(keyString.begin(), keyString.end(), key);
 
-        std::clog << "key1 " << key << std::endl;
-
         if (unhash_file_metod(decrypted.c_str(), encrypted.c_str(), key) != 0)
         {
             std::clog << "Error unhash_file_metod" << std::endl;
         }
-
-        std::clog << "key2 " << key << std::endl;
-
-        old_locasion = path;
-        path = decrypted;
     }
 
     static void gen_file(string _key, string &path)
@@ -428,7 +421,7 @@ int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
-    string key = "";
+    string key = "Password";
 
     if (sodium_init() < 0)
     {
@@ -440,7 +433,8 @@ int main(int argc, char const *argv[])
         Error::BigExit(1);
     }
 
-
+    encripsion.hash_file(key);
+    encripsion.unhash_file(key);
 
     // fileHandle.open_password_file(fileHandle.pathOfPassFile);
 
@@ -449,7 +443,7 @@ int main(int argc, char const *argv[])
     // string h = "Password";
     // std::copy(h.begin(), h.end(), key);
 
-    //  encripsion.unhash_file(key, fileHandle.pathOfPassFile);
+    // encripsion.unhash_file(key, fileHandle.pathOfPassFile);
 
     // InDataBase inDataBase;
     // inDataBase.print_all_words();

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string.h>
 #include <fstream>
+#include "main.h"
 
 #define CHUNK_SIZE 4096
 
@@ -119,37 +120,65 @@ string hash_password(string password)
     return hash;
 }
 
-int main(void)
+class Crypt
+{
+public:
+    static string decrypted;
+    static string encrypted;
+
+    static void decrypt_metod(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    {
+        if (decrypt(decrypted.data(), encrypted.data(), key) != 0)
+        {
+            std::cout << "decrypt error" << std::endl;
+            exit(1);
+        }
+    }
+
+    static void encrypt_metod(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    {
+        if (encrypt("./tmp/encrypted", "./tmp/decrypted", key) != 0)
+        {
+            std::cout << "encrypt error" << std::endl;
+            exit(1);
+        }
+    }
+};
+
+string Crypt::decrypted = "./tmp/decrypted";
+string Crypt::encrypted = "./tmp/encrypted";
+
+int main(int argc, char const *argv[])
 {
     unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
 
-    if (sodium_init() != 0)
+    if (sodium_init() < 0)
     {
-        return 1;
+        exit(1);
+    }
+
+    if (argc != 2)
+    {
+        exit(1);
     }
 
     string password = password_form_user();
     string key_string = hash_password(password);
 
+    to_key(key, key_string);
+    Crypt::decrypt_metod(key);
+    // cout << key_string << endl;
+    cin >> key_string;
+
+    Crypt::encrypt_metod(key);
+
+    return 0;
+}
+
+void to_key(unsigned char key[32], std::string &key_string)
+{
     for (int i = 0; i < 32; i++)
     {
         key[i] = static_cast<unsigned char>(key_string[i]);
     }
-
-    if (decrypt("./tmp/decrypted", "./tmp/encrypted", key) != 0)
-    {
-        std::cout << "decrypt" << std::endl;
-        return 1;
-    }
-
-    // cout << key_string << endl;
-    cin >> key_string;
-
-    if (encrypt("./tmp/encrypted", "./tmp/decrypted", key) != 0)
-    {
-        std::cout << "encrypt" << std::endl;
-        return 1;
-    }
-
-    return 0;
 }

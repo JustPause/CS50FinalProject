@@ -461,26 +461,29 @@ private:
     string decrypted = "/tmp/decrypted.md";
 
 public:
-    void print_all_words()
+    void print_all_words(string pathOfPassFile)
     {
-        std::ifstream ifile;
-        ifile.open(InDataBase::pathOfPassFile);
 
         int id;
         string username, name, password;
         std::vector<Passwords> password_vector;
 
-        int size = 0;
-        std::cout << "as" << std::endl;
-        while (ifile >> id >> username >> name >> password)
-        {
-            size++;
+        // int size = 0;
+        // std::cout << "print_all_words" << std::endl;
+        // while (ifile >> id >> username >> name >> password)
+        // {
+        //     size++;
 
-            password_vector.resize(size);
-            password_vector[size - 1].id = id;
+        //     password_vector.resize(size);
+        //     password_vector[size - 1].id = id;
 
-            std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
-        }
+        //     std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
+        // }
+
+        std::ifstream ifile;
+        ifile.open(pathOfPassFile);
+        ifile >> id >> username >> name >> password;
+        std::cout << id << "\t" << username << "\t" << name << "\t" << password << std::endl;
     }
 
     char get_user_disision()
@@ -569,70 +572,49 @@ int main(int argc, char const *argv[])
         Error::BigExit(1);
     }
 
-    if (fileHandle.deas_file_exist(argv[1]))
+    // if (fileHandle.deas_file_exist(argv[1]))
+    // {
+
+    // opens the file with password
+    // std::cout << "Please provide a password." << std::endl;
+
+    // std::cin >> Password;
+
+    encripsion.key_derivation(Password, key);
+    if (Encripsion::encrypt("./tmp/encrypted.pass", "./tmp/decrypted.md", key) != 0)
     {
-        // opens the file with password
-        std::cout << "Please provide a password." << std::endl;
-
-        std::cin >> Password;
-
-        encripsion.key_derivation(Password, key);
-
-        if (encripsion.decrypt("./tmp/decrypted.md", "./tmp/encrypted.pass", key) != 0)
-        {
-            std::cout << "Bad password" << std::endl;
-            return 1;
-        }
-
-        inDataBase.print_all_words();
+        std::cout << "Bad password" << std::endl;
+        return 1;
     }
-    else
+    if (Encripsion::decrypt("./tmp/decrypted.md", "./tmp/encrypted.pass", key) != 0)
     {
-        // craites the file with password
-
-        inDataBase.print_all_words();
-
-        std::cout << "Please provide a password.";
-        std::cin >> Password;
-        encripsion.key_derivation(Password, key);
-    }
-
-    if (encripsion.encrypt("./tmp/encrypted.pass", "./tmp/decrypted.md", key) != 0)
-    {
+        std::cout << "Bad password" << std::endl;
         return 1;
     }
 
-    // fileHandle.open_password_file(fileHandle.pathOfPassFile);
-
-    // fileHandle.take_password_from_user(key);
-
-    // string h = "Password";
-    // std::copy(h.begin(), h.end(), key);
-
-    // encripsion.unhash_file(key, fileHandle.pathOfPassFile);
-
-    // InDataBase inDataBase;
-    // inDataBase.print_all_words();
-
-    // char user_disision = inDataBase.get_user_disision();
-    // if (user_disision == 's')
+    // inDataBase.print_all_words("/tmp/decrypted.md");
+    // if (encripsion.encrypt("./tmp/encrypted.pass", "./tmp/decrypted.md", key) != 0)
     // {
+    //     std::cout << "Bad password" << std::endl;
+    //     return 1;
     // }
-    // else if (user_disision == 'e')
-    // {
     // }
-    // else if (user_disision == 'd')
+    // else
     // {
-    // }
-    // else if (user_disision == 'a')
-    // {
-    //     inDataBase.Add();
+    //     // craites the file with password
+
+    //     inDataBase.print_all_words("/tmp/decrypted.md");
+
+    //     std::cout << "Please provide a password.";
+    //     std::cin >> Password;
+    //     encripsion.key_derivation(Password, key);
     // }
 
-    // string cin;
-    // std::cin >> cin;
-
-    // encripsion.hash_file(key);
+    // if (encripsion.encrypt("./tmp/encrypted.pass", "./tmp/decrypted.md", key) != 0)
+    // {
+    //     std::cout << "Bad password" << std::endl;
+    //     return 1;
+    // }
 
     // ToDo Some how get a key form the password
     // TODO The hash password can be used as a seed for the oder passwords. The last n digets are the seed for the incripsion. Anyone can't read the password widaut the main password hash

@@ -464,16 +464,14 @@ public:
     void print_all_words()
     {
         std::ifstream ifile;
-
         ifile.open(InDataBase::pathOfPassFile);
-        ifile.ignore(99);
 
         int id;
         string username, name, password;
         std::vector<Passwords> password_vector;
 
         int size = 0;
-
+        std::cout << "as" << std::endl;
         while (ifile >> id >> username >> name >> password)
         {
             size++;
@@ -580,7 +578,7 @@ int main(int argc, char const *argv[])
 
         encripsion.key_derivation(Password, key);
 
-        if (encripsion.decrypt("./tmp/decrypted", "./tmp/encrypted", key) != 0)
+        if (encripsion.decrypt("./tmp/decrypted.md", "./tmp/encrypted.pass", key) != 0)
         {
             std::cout << "Bad password" << std::endl;
             return 1;
@@ -599,7 +597,7 @@ int main(int argc, char const *argv[])
         encripsion.key_derivation(Password, key);
     }
 
-    if (encripsion.encrypt("./tmp/encrypted", "./tmp/decrypted", key) != 0)
+    if (encripsion.encrypt("./tmp/encrypted.pass", "./tmp/decrypted.md", key) != 0)
     {
         return 1;
     }

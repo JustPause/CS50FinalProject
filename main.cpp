@@ -440,14 +440,16 @@ int main(int argc, char const *argv[])
         Error::BigExit(1);
     }
 
-    fileHandle.open_password_file(fileHandle.pathOfPassFile);
 
-    fileHandle.take_password_from_user(key);
+
+    // fileHandle.open_password_file(fileHandle.pathOfPassFile);
+
+    // fileHandle.take_password_from_user(key);
 
     // string h = "Password";
     // std::copy(h.begin(), h.end(), key);
 
-    encripsion.unhash_file(key, fileHandle.pathOfPassFile);
+    //  encripsion.unhash_file(key, fileHandle.pathOfPassFile);
 
     // InDataBase inDataBase;
     // inDataBase.print_all_words();
@@ -470,7 +472,7 @@ int main(int argc, char const *argv[])
     // string cin;
     // std::cin >> cin;
 
-    encripsion.hash_file(key);
+    // encripsion.hash_file(key);
 
     // ToDo Some how get a key form the password
     // TODO The hash password can be used as a seed for the oder passwords. The last n digets are the seed for the incripsion. Anyone can't read the password widaut the main password hash

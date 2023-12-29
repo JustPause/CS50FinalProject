@@ -2,3 +2,9 @@
 .vscode/
 tmp/
 build/
+build/CMakeCache.txt
+build/Makefile
+build/CMakeFiles/CMakeConfigureLog.yaml
+build/CMakeFiles/Makefile2
+build/CMakeFiles/progress.marks
+build/CMakeFiles/RunMe.dir/compiler_depend.make

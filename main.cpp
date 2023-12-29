@@ -16,7 +16,7 @@ public:
     static void BigExit(int i)
     {
         std::cout << "Error " << i << std::endl;
-        exit(i);
+        exit(0);
     }
 
     static void print(string s)
@@ -167,11 +167,15 @@ public:
         return ret;
     }
 
-    static void hash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    static void hash_file(string key_string)
     {
 
         string decrypted = "/tmp/decrypted.md";
         string encrypted = old_locasion;
+
+        unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
+
+        std::copy(key_string.begin(), key_string.end(), key);
 
         if (hash_file_metod(encrypted.c_str(), decrypted.c_str(), key) != 0)
         {
@@ -179,15 +183,24 @@ public:
         }
     }
 
-    static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES], string &path)
+    static void unhash_file(string keyString, string &path)
     {
         string decrypted = "/tmp/decrypted.md";
         string encrypted = path;
+
+        unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
+
+        std::copy(keyString.begin(), keyString.end(), key);
+
+        std::clog << "key1 " << key << std::endl;
 
         if (unhash_file_metod(decrypted.c_str(), encrypted.c_str(), key) != 0)
         {
             std::clog << "Error unhash_file_metod" << std::endl;
         }
+
+        std::clog << "key2 " << key << std::endl;
+
         old_locasion = path;
         path = decrypted;
     }
@@ -196,25 +209,28 @@ public:
     {
         string decrypted = "/tmp/decrypted.md";
         string encrypted = path;
+        unsigned char password_char[crypto_box_SEEDBYTES];
 
         std::ofstream outfile(decrypted);
 
         Encripsion encripsion;
-        string key = _key;
-        encripsion.hash_string(key);
+        string hast_key = _key;
+        encripsion.hash_string(hast_key);
 
-        outfile << key << std::endl;
+        outfile << hast_key << std::endl;
 
         outfile.close();
 
-        unsigned char password_char[crypto_box_SEEDBYTES];
-
         std::copy(_key.begin(), _key.end(), password_char);
+
+        std::clog << "password_char1 " << password_char << std::endl;
 
         if (hash_file_metod(encrypted.c_str(), decrypted.c_str(), password_char) != 0)
         {
             std::clog << "Error hash_file_metod" << std::endl;
         }
+
+        std::clog << "password_char2 " << password_char << std::endl;
 
         old_locasion = path;
         path = decrypted;
@@ -225,44 +241,6 @@ class FileHandle
 {
 
 private:
-    void checkIfItsMyFile(string str, string path)
-    {
-        std::ifstream ifile;
-        ifile.open(str);
-
-        if (!ifile.is_open())
-        {
-
-            std::cout << "File not found" << std::endl;
-
-            char ats;
-
-            std::cout << "Do you want to craite a new password DataBase? Y/N" << std::endl;
-
-            std::cin >> ats;
-
-            if (tolower(ats) == 'n')
-            {
-                exit(0);
-            }
-
-            std::ofstream ofile(str);
-
-            string password;
-            std::cout << "new Password for file" << std::endl;
-            std::cin >> password;
-
-            // unsigned char *password_char = reinterpret_cast<unsigned char *>(*password.c_str());
-
-            Encripsion::gen_file(password, path);
-
-            ofile.close();
-            // TODO Save the password to the file;
-        }
-
-        ifile.close();
-    }
-
     void inputCheck(string file)
     {
         std::ifstream ifile;
@@ -288,20 +266,56 @@ public:
     void open_password_file(string path)
     {
         std::cout << "Opening a file" << std::endl;
-        checkIfItsMyFile(pathOfPassFile, path);
+
+        std::ifstream ifile;
+        ifile.open(pathOfPassFile);
+
+        if (!ifile.is_open())
+        {
+
+            std::cout << "File not found" << std::endl;
+
+            char ats;
+
+            std::cout << "Do you want to craite a new password DataBase? Y/N" << std::endl;
+
+            std::cin >> ats;
+
+            if (tolower(ats) == 'n')
+            {
+                exit(0);
+            }
+
+            std::ofstream ofile(pathOfPassFile);
+
+            string password;
+            std::cout << "new Password for file" << std::endl;
+            std::cin >> password;
+
+            // unsigned char *password_char = reinterpret_cast<unsigned char *>(*password.c_str());
+
+            Encripsion::gen_file(password, path);
+
+            ofile.close();
+            // TODO Save the password to the file;
+        }
+
+        ifile.close();
+
         std::clog << "open_password_file secses" << std::endl;
     }
 
-    void take_password_from_user(unsigned char (&key)[crypto_box_SEEDBYTES])
+    void take_password_from_user(string &password)
     {
         inputCheck(pathOfPassFile);
 
         std::cout << "Hello" << std::endl
-                  << "Please previde a password for the file: " << key << std::endl;
+                  << "Please previde a password for the file: " << password << std::endl;
 
         std::cin >> password;
 
-        std::copy(password.begin(), password.end(), key);
+        std::cout << "Hello" << std::endl
+                  << "Please previde a password for the file: " << password << std::endl;
     }
 
     FileHandle(string path)
@@ -396,7 +410,6 @@ public:
         outfile << id << "\t" << name << "\t" << username << "\t" << password << "\t" << std::endl;
         std::cin >> password;
         outfile.close();
-        
     }
     void Qwite()
     {
@@ -415,7 +428,7 @@ int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
-    unsigned char key[crypto_box_SEEDBYTES] = "";
+    string key = "";
 
     if (sodium_init() < 0)
     {
@@ -431,25 +444,31 @@ int main(int argc, char const *argv[])
 
     fileHandle.take_password_from_user(key);
 
+    // string h = "Password";
+    // std::copy(h.begin(), h.end(), key);
+
     encripsion.unhash_file(key, fileHandle.pathOfPassFile);
 
-    InDataBase inDataBase;
-    inDataBase.print_all_words();
+    // InDataBase inDataBase;
+    // inDataBase.print_all_words();
 
-    char user_disision = inDataBase.get_user_disision();
-    if (user_disision == 's')
-    {
-    }
-    else if (user_disision == 'e')
-    {
-    }
-    else if (user_disision == 'd')
-    {
-    }
-    else if (user_disision == 'a')
-    {
-        inDataBase.Add();
-    }
+    // char user_disision = inDataBase.get_user_disision();
+    // if (user_disision == 's')
+    // {
+    // }
+    // else if (user_disision == 'e')
+    // {
+    // }
+    // else if (user_disision == 'd')
+    // {
+    // }
+    // else if (user_disision == 'a')
+    // {
+    //     inDataBase.Add();
+    // }
+
+    // string cin;
+    // std::cin >> cin;
 
     encripsion.hash_file(key);
 

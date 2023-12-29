@@ -64,6 +64,7 @@ CMAKE_BINARY_DIR = /home/justinas/Programming/CS50FinalProject/build
 
 # The main recursive "all" target.
 all: CMakeFiles/RunMe.dir/all
+all: CMakeFiles/TestMe.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -72,6 +73,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/RunMe.dir/clean
+clean: CMakeFiles/TestMe.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -99,6 +101,32 @@ RunMe: CMakeFiles/RunMe.dir/rule
 CMakeFiles/RunMe.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunMe.dir/build.make CMakeFiles/RunMe.dir/clean
 .PHONY : CMakeFiles/RunMe.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/TestMe.dir
+
+# All Build rule for target.
+CMakeFiles/TestMe.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestMe.dir/build.make CMakeFiles/TestMe.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestMe.dir/build.make CMakeFiles/TestMe.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/justinas/Programming/CS50FinalProject/build/CMakeFiles --progress-num=3,4 "Built target TestMe"
+.PHONY : CMakeFiles/TestMe.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/TestMe.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/justinas/Programming/CS50FinalProject/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/TestMe.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/justinas/Programming/CS50FinalProject/build/CMakeFiles 0
+.PHONY : CMakeFiles/TestMe.dir/rule
+
+# Convenience name for target.
+TestMe: CMakeFiles/TestMe.dir/rule
+.PHONY : TestMe
+
+# clean rule for target.
+CMakeFiles/TestMe.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestMe.dir/build.make CMakeFiles/TestMe.dir/clean
+.PHONY : CMakeFiles/TestMe.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

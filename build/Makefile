@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/justinas/Programming/CS50FinalProject/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "No interactive CMake dialog available..."
@@ -174,6 +184,19 @@ RunMe/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunMe.dir/build.make CMakeFiles/RunMe.dir/build
 .PHONY : RunMe/fast
 
+#=============================================================================
+# Target rules for targets named TestMe
+
+# Build rule for target.
+TestMe: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 TestMe
+.PHONY : TestMe
+
+# fast build rule for target.
+TestMe/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestMe.dir/build.make CMakeFiles/TestMe.dir/build
+.PHONY : TestMe/fast
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -198,6 +221,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunMe.dir/build.make CMakeFiles/RunMe.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+test.o: test.cpp.o
+.PHONY : test.o
+
+# target to build an object file
+test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestMe.dir/build.make CMakeFiles/TestMe.dir/test.cpp.o
+.PHONY : test.cpp.o
+
+test.i: test.cpp.i
+.PHONY : test.i
+
+# target to preprocess a source file
+test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestMe.dir/build.make CMakeFiles/TestMe.dir/test.cpp.i
+.PHONY : test.cpp.i
+
+test.s: test.cpp.s
+.PHONY : test.s
+
+# target to generate assembly for a file
+test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestMe.dir/build.make CMakeFiles/TestMe.dir/test.cpp.s
+.PHONY : test.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -210,10 +257,15 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... RunMe"
+	@echo "... TestMe"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 

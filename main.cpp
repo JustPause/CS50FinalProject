@@ -17,6 +17,7 @@ public:
     {
         std::cout << "Error " << i << std::endl;
         exit(0);
+        throw std::runtime_error("Error");
     }
 
     static void print(string s)
@@ -32,6 +33,129 @@ private:
 
 public:
     static unsigned char *p_key;
+
+    static void key_derivation(string PASSWORD, unsigned char (&key)[crypto_box_SEEDBYTES])
+    {
+
+        // unsigned char salt[crypto_pwhash_SALTBYTES];
+
+        // randombytes_buf(salt, sizeof salt);
+
+        // if (crypto_pwhash(key, sizeof key, PASSWORD.data(), strlen(PASSWORD.data()), salt,
+        //                   crypto_pwhash_OPSLIMIT_INTERACTIVE, crypto_pwhash_MEMLIMIT_INTERACTIVE,
+        //                   crypto_pwhash_ALG_DEFAULT) != 0)
+        // {
+
+        //     std::cerr << "out of memory" << std::endl;
+        //     Error::BigExit(5);
+        //     /* out of memory */
+        // }
+
+        char hashed_password[crypto_pwhash_STRBYTES];
+
+        if (crypto_pwhash_str(hashed_password, PASSWORD.data(), strlen(PASSWORD.data()),
+                              crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE) != 0)
+        {
+            /* out of memory */
+        }
+
+        if (crypto_pwhash_str_verify(hashed_password, PASSWORD.data(), strlen(PASSWORD.data())) != 0)
+        {
+            /* wrong password */
+        }
+        for (int i = 0; i < 32; i++)
+        {
+            key[i] = static_cast<unsigned char>(hashed_password[i]);
+        }
+    }
+
+    static int
+    encrypt(const char *target_file, const char *source_file,
+            const unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    {
+        unsigned char buf_in[CHUNK_SIZE];
+        unsigned char buf_out[CHUNK_SIZE + crypto_secretstream_xchacha20poly1305_ABYTES];
+        unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
+        crypto_secretstream_xchacha20poly1305_state st;
+        FILE *fp_t, *fp_s;
+        unsigned long long out_len;
+        size_t rlen;
+        int eof;
+        unsigned char tag;
+
+        fp_s = fopen(source_file, "rb");
+        fp_t = fopen(target_file, "wb");
+        crypto_secretstream_xchacha20poly1305_init_push(&st, header, key);
+        fwrite(header, 1, sizeof header, fp_t);
+        do
+        {
+            rlen = fread(buf_in, 1, sizeof buf_in, fp_s);
+            eof = feof(fp_s);
+            tag = eof ? crypto_secretstream_xchacha20poly1305_TAG_FINAL : 0;
+            crypto_secretstream_xchacha20poly1305_push(&st, buf_out, &out_len, buf_in, rlen,
+                                                       NULL, 0, tag);
+            fwrite(buf_out, 1, (size_t)out_len, fp_t);
+        } while (!eof);
+        fclose(fp_t);
+        fclose(fp_s);
+        return 0;
+    }
+
+    static int
+    decrypt(const char *target_file, const char *source_file,
+            const unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
+    {
+        unsigned char buf_in[CHUNK_SIZE + crypto_secretstream_xchacha20poly1305_ABYTES];
+        unsigned char buf_out[CHUNK_SIZE];
+        unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
+        crypto_secretstream_xchacha20poly1305_state st;
+        FILE *fp_t, *fp_s;
+        unsigned long long out_len;
+        size_t rlen;
+        int eof;
+        int ret = -1;
+        unsigned char tag;
+
+        fp_s = fopen(source_file, "rb");
+        fp_t = fopen(target_file, "wb");
+        fread(header, 1, sizeof header, fp_s);
+        if (crypto_secretstream_xchacha20poly1305_init_pull(&st, header, key) != 0)
+        {
+            goto ret; /* incomplete header */
+        }
+        do
+        {
+            rlen = fread(buf_in, 1, sizeof buf_in, fp_s);
+            eof = feof(fp_s);
+            if (crypto_secretstream_xchacha20poly1305_pull(&st, buf_out, &out_len, &tag,
+                                                           buf_in, rlen, NULL, 0) != 0)
+            {
+                goto ret; /* corrupted chunk */
+            }
+            if (tag == crypto_secretstream_xchacha20poly1305_TAG_FINAL)
+            {
+                if (!eof)
+                {
+                    goto ret; /* end of stream reached before the end of the file */
+                }
+            }
+            else
+            { /* not the final chunk yet */
+                if (eof)
+                {
+                    goto ret; /* end of file reached before the end of the stream */
+                }
+            }
+            fwrite(buf_out, 1, (size_t)out_len, fp_t);
+        } while (!eof);
+
+        ret = 0;
+    ret:
+        fclose(fp_t);
+        fclose(fp_s);
+        return ret;
+    }
+
     static void hash_string(string &s)
     {
         // https://doc.libsodium.org/password_hashing/default_phf
@@ -167,15 +291,11 @@ public:
         return ret;
     }
 
-    static void hash_file(string key_string)
+    static void hash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
     {
 
-        string decrypted = "/tmp/decrypted.md";
-        string encrypted = "/tmp/Pass.pass";
-
-        unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
-
-        std::copy(key_string.begin(), key_string.end(), key);
+        string decrypted = "./tmp/decrypted.md";
+        string encrypted = "./tmp/Pass.pass";
 
         if (hash_file_metod(encrypted.c_str(), decrypted.c_str(), key) != 0)
         {
@@ -183,14 +303,10 @@ public:
         }
     }
 
-    static void unhash_file(string keyString)
+    static void unhash_file(unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES])
     {
-        string decrypted = "/tmp/decrypted.md";
-        string encrypted = "/tmp/Pass.pass";
-
-        unsigned char key[crypto_secretstream_xchacha20poly1305_KEYBYTES];
-
-        std::copy(keyString.begin(), keyString.end(), key);
+        string decrypted = "./tmp/decrypted.md";
+        string encrypted = "./tmp/Pass.pass";
 
         if (unhash_file_metod(decrypted.c_str(), encrypted.c_str(), key) != 0)
         {
@@ -421,7 +537,7 @@ int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
-    string key = "Password";
+    string Password = "Password2";
 
     if (sodium_init() < 0)
     {
@@ -432,8 +548,21 @@ int main(int argc, char const *argv[])
     {
         Error::BigExit(1);
     }
-    encripsion.unhash_file(key);
-    encripsion.hash_file(key);
+    unsigned char key[crypto_box_SEEDBYTES];
+    encripsion.key_derivation(Password, key);
+
+    // if (encripsion.encrypt("./tmp/encrypted", "./tmp/original", key) != 0)
+    // {
+    //     return 1;
+    // }
+
+    if (encripsion.decrypt("./tmp/decrypted", "./tmp/encrypted", key) != 0)
+    {
+        return 1;
+    }
+
+    // encripsion.hash_file(key);
+    // encripsion.unhash_file(key);
 
     // fileHandle.open_password_file(fileHandle.pathOfPassFile);
 

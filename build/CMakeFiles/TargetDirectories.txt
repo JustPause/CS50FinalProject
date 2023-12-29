@@ -1,4 +1,6 @@
 /home/justinas/Programming/CS50FinalProject/build/CMakeFiles/RunMe.dir
+/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/TestMe.dir
+/home/justinas/Programming/CS50FinalProject/build/CMakeFiles/test.dir
 /home/justinas/Programming/CS50FinalProject/build/CMakeFiles/edit_cache.dir
 /home/justinas/Programming/CS50FinalProject/build/CMakeFiles/rebuild_cache.dir
 /home/justinas/Programming/CS50FinalProject/build/CMakeFiles/list_install_components.dir

@@ -581,11 +581,13 @@ int main(int argc, char const *argv[])
     // std::cin >> Password;
 
     encripsion.key_derivation(Password, key);
+    
     if (Encripsion::encrypt("./tmp/encrypted.pass", "./tmp/decrypted.md", key) != 0)
     {
         std::cout << "Bad password" << std::endl;
         return 1;
     }
+
     if (Encripsion::decrypt("./tmp/decrypted.md", "./tmp/encrypted.pass", key) != 0)
     {
         std::cout << "Bad password" << std::endl;
@@ -601,7 +603,7 @@ int main(int argc, char const *argv[])
     // }
     // else
     // {
-    //     // craites the file with password
+    // craites the file with password
 
     //     inDataBase.print_all_words("/tmp/decrypted.md");
 

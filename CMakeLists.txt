@@ -21,8 +21,32 @@ find_library(LIBSODIUM sodium)
 if(NOT LIBSODIUM)
     message(FATAL_ERROR "libsodium library not found")
 endif()
+
+# Add executable
 add_executable(RunMe main.cpp)
 target_link_libraries(RunMe PUBLIC ${LIBSODIUM})
 
 # Install target
 install(TARGETS RunMe DESTINATION bin)
+
+# Create build directory if it doesn't exist
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/build)
+
+# Set output directory for archives and libraries to build directory
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
+
+# Set output directory for executable to bin directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Enable testing
+enable_testing()
+
+# Add test executable
+add_executable(TestMe test.cpp)
+
+# Link test executable with libsodium library
+target_link_libraries(TestMe PUBLIC ${LIBSODIUM})
+
+# Add test
+add_test(NAME MyTest COMMAND TestMe)

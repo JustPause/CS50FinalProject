@@ -99,7 +99,7 @@ int main(void)
     {
         return 1;
     }
-
+ 
     if (encrypt("./tmp/encrypted", "./tmp/original", key) != 0)
     {
         std::cout << "encrypt" << std::endl;

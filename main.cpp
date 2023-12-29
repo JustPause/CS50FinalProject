@@ -371,7 +371,19 @@ public:
         Encripsion encripsion;
         encripsion.PasswordCheck(hashed_password_from_file.data(), password.data());
     }
-
+    bool deas_file_exist(string path)
+    {
+        std::ifstream ifile;
+        ifile.open(path);
+        if (!ifile.is_open())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     void open_password_file(string path)
     {
         std::cout << "Opening a file" << std::endl;
@@ -436,6 +448,8 @@ public:
 class InDataBase
 {
 private:
+    string pathOfPassFile;
+
     struct Passwords
     {
         int id;
@@ -451,7 +465,7 @@ public:
     {
         std::ifstream ifile;
 
-        ifile.open(FileHandle::pathOfPassFile);
+        ifile.open(InDataBase::pathOfPassFile);
         ifile.ignore(99);
 
         int id;
@@ -524,6 +538,11 @@ public:
     {
         Error::BigExit(0);
     }
+
+    InDataBase(string path)
+    {
+        pathOfPassFile = path;
+    }
 };
 
 string FileHandle::password;
@@ -537,7 +556,10 @@ int main(int argc, char const *argv[])
 {
     FileHandle fileHandle(argv[1]);
     Encripsion encripsion;
-    string Password = "Password2";
+    InDataBase inDataBase(argv[1]);
+    string Password;
+
+    unsigned char key[crypto_box_SEEDBYTES];
 
     if (sodium_init() < 0)
     {
@@ -548,21 +570,39 @@ int main(int argc, char const *argv[])
     {
         Error::BigExit(1);
     }
-    unsigned char key[crypto_box_SEEDBYTES];
-    encripsion.key_derivation(Password, key);
 
-    // if (encripsion.encrypt("./tmp/encrypted", "./tmp/original", key) != 0)
-    // {
-    //     return 1;
-    // }
+    if (fileHandle.deas_file_exist(argv[1]))
+    {
+        // opens the file with password
+        std::cout << "Please provide a password." << std::endl;
 
-    if (encripsion.decrypt("./tmp/decrypted", "./tmp/encrypted", key) != 0)
+        std::cin >> Password;
+
+        encripsion.key_derivation(Password, key);
+
+        if (encripsion.decrypt("./tmp/decrypted", "./tmp/encrypted", key) != 0)
+        {
+            std::cout << "Bad password" << std::endl;
+            return 1;
+        }
+
+        inDataBase.print_all_words();
+    }
+    else
+    {
+        // craites the file with password
+
+        inDataBase.print_all_words();
+
+        std::cout << "Please provide a password.";
+        std::cin >> Password;
+        encripsion.key_derivation(Password, key);
+    }
+
+    if (encripsion.encrypt("./tmp/encrypted", "./tmp/decrypted", key) != 0)
     {
         return 1;
     }
-
-    // encripsion.hash_file(key);
-    // encripsion.unhash_file(key);
 
     // fileHandle.open_password_file(fileHandle.pathOfPassFile);
 

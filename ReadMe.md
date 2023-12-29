@@ -86,3 +86,11 @@ project’s title - CS50FinalProject,
 #### Description
 
 So this is a project of mine that I started making for the final project of CS50. I planned to make a PSP game, but the project was too big, so I decreased the size. When I started learning gui I thought I could make a GUI in Java, but I was wrong it was way too hard, so I started making a password manager in the console, I spent a lot of time making the program I guess for 4 days staite, I will take holidays form programming after finding this project. more mover I home I will not be to late to give my project.
+
+---
+
+## story
+
+Shosing a librery was difikalt. the first thing was that I wanted to make it by myself. Started learning more stuff and understood that for good encryption I need to binary manipulate stings and understand all least assembly. I drop that idea quite quickly. but I still needed a working project, which left me with cpp library, i started searching, on Reddit and found that someone recommended the sodium lib. I looked at the website it looked fine so I found a library on **apt** (its liunux fing) I included it in my project. I didn't want to always use G++ so I made a **make file** to ease the pain of compiling everything, but it didn't help. so sat in my chair and because I started the CS50 in 2022 I understood that the deadline is New Year's eve. so I consented to work and when the holidays started the everyday day I programmed it, wit was somehow fun for me to only conecnted on the code. of course, I listened to music, and some podcasts, but mainly programmed non-stop. it was a head pain to understand my spaghetti code and improve it day by day, I understood the meme that when you code too much the code starts debugging you. but somehow I meditate. and I am proud of myself. I have rewritten the program at least 3 times, every time refactoring it to be better and simpler. it helped, but I won't recommend anyone to use it as a password manager, there are more and better password managers in the world.
+
+That discussion, now can I have my certificate, please
